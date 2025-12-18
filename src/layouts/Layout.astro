@@ -42,9 +42,6 @@ if (!banner || typeof banner !== "string" || banner.trim() === "") {
 	banner = siteConfig.banner.src;
 }
 
-// TODO don't use post cover as banner for now
-banner = siteConfig.banner.src;
-
 const enableBanner = siteConfig.banner.enable;
 
 let pageTitle: string;
@@ -360,6 +357,7 @@ function showBanner() {
 		return;
 	}
 
+	// Remove the opacity-0 and scale-105 to show the banner on initial load
 	banner.classList.remove('opacity-0', 'scale-105');
 }
 
@@ -404,7 +402,7 @@ const setup = () => {
 			navbar.classList.add('navbar-hidden')
 		}
 	})
-	window.swup.hooks.on('content:replace', initCustomScrollbar)
+	// Start fading out banner when page transition starts
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
@@ -426,12 +424,21 @@ const setup = () => {
 			toc.classList.add('toc-not-ready')
 		}
 	});
+	
+	window.swup.hooks.on('content:replace', async () => {
+		initCustomScrollbar();
+		// Swup automatically handles banner replacement since it's in containers
+		// No need for manual banner update
+	})
 	window.swup.hooks.on('page:view', () => {
 		// hide the temp high element when the transition is done
 		const heightExtend = document.getElementById('page-height-extend')
 		if (heightExtend) {
 			heightExtend.classList.remove('hidden')
 		}
+		
+		// Show the new banner after Swup replaces it
+		showBanner();
 	});
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		setTimeout(() => {
@@ -453,6 +460,8 @@ if (window?.swup?.hooks) {
 } else {
 	document.addEventListener('swup:enable', setup)
 }
+
+// Swup handles browser back/forward navigation automatically
 
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');

@@ -3,7 +3,7 @@ title: 你好，世界！
 published: 2025-07-29
 description: ''
 image: ''
-tags: [misc]
+tags: [wordpress, misc]
 category: '杂项'
 draft: false 
 lang: ''
