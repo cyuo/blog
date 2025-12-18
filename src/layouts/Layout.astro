@@ -202,6 +202,10 @@ const bannerOffset =
 	#sidebar-sticky {
 		@apply top-[calc(1rem_-_var(--banner-height-extend))];
 	}
+	/* Navbar show/hide animation support */
+	#navbar-wrapper {
+		@apply transition-all duration-500 ease-out transform-gpu will-change-transform will-change-auto;
+	}
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
 	}
@@ -429,10 +433,9 @@ const setup = () => {
 			bodyElement!.classList.remove('lg:is-home');
 		}
 
-		// Prepare main-content-wrapper target position
+		// Move main-content-wrapper immediately so平移与滚动同步
 		const mainContentWrapper = document.getElementById('main-content-wrapper') as HTMLElement;
-		const calcAndApplyTop = () => {
-			if (!mainContentWrapper) return;
+		if (mainContentWrapper) {
 			const isToHome = pathsEqual(visit.to.url, url('/'));
 			const isToPost = visit.to.url.includes('/posts/');
 			const shouldShowBanner = isToHome || isToPost;
@@ -442,28 +445,16 @@ const setup = () => {
 				: 'calc(4.5rem + 2rem)';
 
 			mainContentWrapper.style.transition = 'top 0.6s ease-out';
-			mainContentWrapper.style.top = newTop;
-		};
+			requestAnimationFrame(() => {
+				mainContentWrapper.style.top = newTop;
+			});
+		}
 
-		// Smoothly scroll to top; start the main move after scrolling stops (or immediately if no scroll)
-		let scrollEndTimer: number | undefined;
-		const onScrollEnd = () => {
-			if (scrollEndTimer) window.clearTimeout(scrollEndTimer);
-			scrollEndTimer = window.setTimeout(() => {
-				window.removeEventListener('scroll', onScrollEnd);
-				calcAndApplyTop();
-			}, 60); // wait for scroll to settle
-		};
-
+		// Smoothly scroll to top at navigation start to avoid mid-way jump
 		try {
-			window.addEventListener('scroll', onScrollEnd, { passive: true });
-			// trigger once in case already at top
-			onScrollEnd();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 		} catch (_e) {
-			// fallback: instant scroll then apply
 			window.scrollTo(0, 0);
-			calcAndApplyTop();
 		}
 
 		// Hide the TOC while scrolling back to top
@@ -510,10 +501,13 @@ let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
 function scrollFunction() {
-	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
+	// Use actual banner height (desktop: BANNER_HEIGHT_HOME; mobile: BANNER_HEIGHT)
+	const bannerHeightVH = window.innerWidth >= 1024 ? BANNER_HEIGHT_HOME : BANNER_HEIGHT;
+	const bannerHeightPx = window.innerHeight * (bannerHeightVH / 100);
+	const hasBanner = document.body.classList.contains('enable-banner');
 
 	if (backToTopBtn) {
-		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+		if (document.body.scrollTop > bannerHeightPx || document.documentElement.scrollTop > bannerHeightPx) {
 			backToTopBtn.classList.remove('hide')
 		} else {
 			backToTopBtn.classList.add('hide')
@@ -521,23 +515,19 @@ function scrollFunction() {
 	}
 
 	if (bannerEnabled && toc) {
-		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
+		if (document.body.scrollTop > bannerHeightPx || document.documentElement.scrollTop > bannerHeightPx) {
 			toc.classList.remove('toc-hide')
 		} else {
 			toc.classList.add('toc-hide')
 		}
 	}
 
-	if (!bannerEnabled) return
+	if (!hasBanner) return
 	if (navbar) {
 		const NAVBAR_HEIGHT = 72
 		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
 
-		let bannerHeight = BANNER_HEIGHT
-		if (document.body.classList.contains('lg:is-home') && window.innerWidth >= 1024) {
-			bannerHeight = BANNER_HEIGHT_HOME
-		}
-		let threshold = window.innerHeight * (bannerHeight / 100) - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
+		let threshold = bannerHeightPx - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
 		} else {

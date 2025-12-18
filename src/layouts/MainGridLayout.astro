@@ -64,7 +64,7 @@ const mainPanelTop = showBanner
 <!-- Banner - always render container for Swup consistency; hide via opacity/visibility to avoid layout jumps -->
 <div
 	id="banner-wrapper"
-	class={`absolute z-10 w-full overflow-hidden transition duration-600`}
+	class={`absolute z-10 w-full overflow-hidden transition duration-700`}
 	style={`top: -${BANNER_HEIGHT_EXTEND}vh; opacity: ${showBanner ? 1 : 0}; visibility: ${showBanner ? 'visible' : 'hidden'}; pointer-events: ${showBanner ? 'auto' : 'none'};`}
 >
 	<div id="banner" class="transition-swup-fade w-full h-full opacity-0 scale-105">
@@ -76,6 +76,19 @@ const mainPanelTop = showBanner
 			basePath={bannerBasePath}
 		>
 		</ImageWrapper>}
+
+		{isHomePage && (
+			<div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-4 transition-swup-fade">
+				<div class="text-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.5)] text-3xl md:text-5xl font-bold tracking-tight">
+					{siteConfig.title}
+				</div>
+				{siteConfig.subtitle && (
+					<div class="mt-3 text-white/85 drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)] text-lg md:text-2xl font-medium">
+						{siteConfig.subtitle}
+					</div>
+				)}
+			</div>
+		)}
 	</div>
 </div>
 
@@ -83,7 +96,7 @@ const mainPanelTop = showBanner
 <div id="main-content-wrapper" class="absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}; transition: top 0.6s ease-out;`}>
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
-        <div id="main-grid" class="transition duration-600 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
+        <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
     mx-auto gap-4 px-0 md:px-4"
         >
             <!-- Content above main-grid (for post metadata, title, etc.) -->
