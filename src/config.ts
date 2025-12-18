@@ -5,6 +5,7 @@ import type {
 	ProfileConfig,
 	SiteConfig,
 	BeianConfig,
+	Friend,
 } from "./types/config";
 import { LinkPreset } from "./types/config";
 
@@ -45,6 +46,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Home,
 		LinkPreset.Archive,
 		// LinkPreset.Privacy,
+		LinkPreset.Friends,
 		LinkPreset.About,
 		{
 			name: "开往",
@@ -55,9 +57,9 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/demo-avatar.png", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "/img/seia_avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "Poi",
-	bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+	bio: "Darkness cannot drive out darkness, only light can do that. Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.",
 	links: [
 		// {
 		// 	name: "Twitter",
@@ -103,3 +105,50 @@ export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	// Please select a dark theme, as this blog theme currently only supports dark background color
 	theme: "github-dark",
 };
+
+export const friends: Friend[] = [
+	// 在这里添加你的友链
+	// 示例：
+	// {
+	// 	name: "示例博客",
+	// 	url: "https://example.com",
+	// 	avatar: "https://example.com/avatar.png",
+	// 	description: "这是一个示例友链",
+	// },
+	{
+		name: "AcoFork Blog",
+		url: "https://2x.nz/",
+		avatar: "/img/2xnz_headimg_dl.jpg",
+		description: "Protect What You Love.",
+	},
+	{
+		name: "Aliya",
+		url: "https://rin.1143520.xyz/",
+		avatar: "/img/rin.1143520.xyz_.avif",
+		description: "【无所事事】我的乐园。",
+	},
+	{
+		name: "FallingSakura",
+		url: "https://fallingsakura.top/",
+		avatar: "/img/fallingsakura.webp",
+		description: "None",
+	},
+	{
+		name: "孤傲导航 – Guao Navs",
+		url: "https://guao.de/",
+		avatar: "",
+		description: "孤傲个人拥有，孤傲导航，乐此书签，简洁导航，云链接，个人导航，个人书签，扩展，多用户",
+	},
+	{
+		name: "皓子的小站",
+		url: "https://howiehz.top",
+		avatar: "/img/howiehz_ico-r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4.webp",
+		description: "互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
+	},
+	{
+		name: "静观小窗",
+		url: "https://www.vindo.cn/",
+		avatar: "/img/jcblog.com_.cn_.profilephoto-rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4.webp",
+		description: "Developer，业余平面设计，细节控，Archer，南宋｜五代｜北朝历史爱好者。",
+	},
+];
