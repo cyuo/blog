@@ -13,6 +13,7 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
+import { pathsEqual, url } from "../utils/url-utils";
 import Layout from "./Layout.astro";
 
 interface Props {
@@ -38,39 +39,61 @@ const hasBannerCredit =
 	siteConfig.banner.enable && siteConfig.banner.credit.enable;
 const hasBannerLink = !!siteConfig.banner.credit.url;
 
-const mainPanelTop = siteConfig.banner.enable
+// Check if current page is home or a post
+const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
+const isPostPage = Astro.url.pathname.includes("/posts/");
+
+// Show banner only on home page and post pages
+const showBanner = siteConfig.banner.enable && (isHomePage || isPostPage);
+
+const mainPanelTop = showBanner
 	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-	: "5.5rem";
+	: "calc(4.5rem + 2rem)"; // navbar height (4.5rem) + gap (2rem)
 ---
 
-<Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>
+<Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} enableBanner={showBanner}>
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>
-<div id="top-row" class="z-50 pointer-events-none relative transition-all duration-700 max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
-    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0 transition-all">
+<div id="top-row" class="z-50 pointer-events-none relative max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
+    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0">
         <Navbar></Navbar>
     </div>
 </div>
 
-<!-- Banner -->
-{siteConfig.banner.enable && <div id="banner-wrapper" class={`absolute z-10 w-full overflow-hidden transition duration-700`} style={`top: -${BANNER_HEIGHT_EXTEND}vh`}>
-    <div id="banner" class="transition-swup-fade w-full h-full opacity-0 scale-105">
-        <ImageWrapper alt="Banner image of the blog" class:list={["object-cover h-full"]}
-                      src={banner || siteConfig.banner.src} position={siteConfig.banner.position}
-                      basePath={bannerBasePath}
-        >
-        </ImageWrapper>
-    </div>
-</div>}
+<!-- Banner - always render container for Swup consistency; hide via opacity/visibility to avoid layout jumps -->
+<div
+	id="banner-wrapper"
+	class={`absolute z-10 w-full overflow-hidden transition duration-600`}
+	style={`top: -${BANNER_HEIGHT_EXTEND}vh; opacity: ${showBanner ? 1 : 0}; visibility: ${showBanner ? 'visible' : 'hidden'}; pointer-events: ${showBanner ? 'auto' : 'none'};`}
+>
+	<div id="banner" class="transition-swup-fade w-full h-full opacity-0 scale-105">
+		{showBanner && <ImageWrapper
+			alt="Banner image of the blog"
+			class:list={["object-cover h-full"]}
+			src={banner || siteConfig.banner.src}
+			position={siteConfig.banner.position}
+			basePath={bannerBasePath}
+		>
+		</ImageWrapper>}
+	</div>
+</div>
 
 <!-- Main content -->
-<div class="absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}`}>
+<div id="main-content-wrapper" class="absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}; transition: top 0.6s ease-out;`}>
     <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
-        <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
+        <div id="main-grid" class="transition duration-600 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
     mx-auto gap-4 px-0 md:px-4"
         >
+            <!-- Content above main-grid (for post metadata, title, etc.) -->
+            <!-- Using absolute positioning to place content above main-grid without affecting its position -->
+            <!-- Always render for Swup consistency -->
+            <div id="post-metadata-container" class="absolute bottom-full left-0 right-0 w-full px-0 md:px-4 pb-4 pointer-events-auto">
+                <div class="rounded-[var(--radius-large)] overflow-hidden backdrop-blur-2xl bg-[var(--card-bg)] shadow-lg transition transition-swup-fade">
+                    <slot name="before-grid"></slot>
+                </div>
+            </div>
             <!-- Banner image credit -->
             {hasBannerCredit && <a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
                                    class:list={["group onload-animation transition-all absolute flex justify-center items-center rounded-full " +
@@ -85,20 +108,20 @@ const mainPanelTop = siteConfig.banner.enable
             </a>}
 
 
-            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
+            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem]" headings={headings}></SideBar>
 
-            <main id="swup-container" class="transition-swup-fade col-span-2 lg:col-span-1 overflow-hidden">
-                <div id="content-wrapper" class="onload-animation">
+            <main class="col-span-2 lg:col-span-1 overflow-hidden">
+                <div id="swup-container" class="transition-swup-fade">
                     <!-- the overflow-hidden here prevent long text break the layout-->
                     <!-- make id different from windows.swup global property -->
                     <slot></slot>
-                    <div class="footer col-span-2 onload-animation hidden lg:block">
+                    <div class="footer col-span-2 hidden lg:block">
                         <Footer></Footer>
                     </div>
                 </div>
             </main>
 
-            <div class="footer col-span-2 onload-animation block lg:hidden">
+            <div class="footer col-span-2 block lg:hidden">
                 <Footer></Footer>
             </div>
         </div>

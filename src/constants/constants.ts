@@ -6,9 +6,9 @@ export const LIGHT_MODE = "light",
 export const DEFAULT_THEME = AUTO_MODE;
 
 // Banner height unit: vh
-export const BANNER_HEIGHT = 35;
-export const BANNER_HEIGHT_EXTEND = 30;
-export const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
+export const BANNER_HEIGHT = 70; // Mobile/tablet: doubled from original 35vh
+export const BANNER_HEIGHT_EXTEND = 25;
+export const BANNER_HEIGHT_HOME = 95; // PC view: as requested
 
 // The height the main panel overlaps the banner, unit: rem
 export const MAIN_PANEL_OVERLAPS_BANNER_HEIGHT = 3.5;

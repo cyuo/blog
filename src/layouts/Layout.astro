@@ -26,9 +26,10 @@ interface Props {
 	description?: string;
 	lang?: string;
 	setOGTypeArticle?: boolean;
+	enableBanner?: boolean;
 }
 
-let { title, banner, description, lang, setOGTypeArticle } = Astro.props;
+let { title, banner, description, lang, setOGTypeArticle, enableBanner } = Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -42,7 +43,8 @@ if (!banner || typeof banner !== "string" || banner.trim() === "") {
 	banner = siteConfig.banner.src;
 }
 
-const enableBanner = siteConfig.banner.enable;
+// Use the passed enableBanner prop if provided, otherwise fall back to config
+const finalEnableBanner = enableBanner !== undefined ? enableBanner : siteConfig.banner.enable;
 
 let pageTitle: string;
 if (title) {
@@ -145,7 +147,7 @@ const bannerOffset =
 		<link rel="alternate" type="application/rss+xml" title={profileConfig.name} href={`${Astro.site}rss.xml`}/>
 
 	</head>
-	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner}]}
+	<body class=" min-h-screen transition " class:list={[{"lg:is-home": isHomePage, "enable-banner": finalEnableBanner}]}
 		  data-overlayscrollbars-initialize
 	>
 		<ConfigCarrier></ConfigCarrier>
@@ -194,10 +196,11 @@ const bannerOffset =
 		@apply translate-y-[var(--banner-height-extend)];
 	}
 	.enable-banner #top-row {
-		@apply h-[calc(var(--banner-height-home)_-_4.5rem)] transition-all duration-300
+		@apply h-[calc(var(--banner-height-home)_-_4.5rem)]
 	}
-	.enable-banner.is-home #sidebar-sticky {
-		@apply top-[calc(1rem_-_var(--banner-height-extend))]
+	/* Sidebar sticky 位置统一为与首页一致的相对位置 */
+	#sidebar-sticky {
+		@apply top-[calc(1rem_-_var(--banner-height-extend))];
 	}
 	.navbar-hidden {
 		@apply opacity-0 -translate-y-16
@@ -426,10 +429,41 @@ const setup = () => {
 			bodyElement!.classList.remove('lg:is-home');
 		}
 
-		// increase the page height during page transition to prevent the scrolling animation from jumping
-		const heightExtend = document.getElementById('page-height-extend')
-		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
+		// Prepare main-content-wrapper target position
+		const mainContentWrapper = document.getElementById('main-content-wrapper') as HTMLElement;
+		const calcAndApplyTop = () => {
+			if (!mainContentWrapper) return;
+			const isToHome = pathsEqual(visit.to.url, url('/'));
+			const isToPost = visit.to.url.includes('/posts/');
+			const shouldShowBanner = isToHome || isToPost;
+
+			const newTop = shouldShowBanner
+				? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
+				: 'calc(4.5rem + 2rem)';
+
+			mainContentWrapper.style.transition = 'top 0.6s ease-out';
+			mainContentWrapper.style.top = newTop;
+		};
+
+		// Smoothly scroll to top; start the main move after scrolling stops (or immediately if no scroll)
+		let scrollEndTimer: number | undefined;
+		const onScrollEnd = () => {
+			if (scrollEndTimer) window.clearTimeout(scrollEndTimer);
+			scrollEndTimer = window.setTimeout(() => {
+				window.removeEventListener('scroll', onScrollEnd);
+				calcAndApplyTop();
+			}, 60); // wait for scroll to settle
+		};
+
+		try {
+			window.addEventListener('scroll', onScrollEnd, { passive: true });
+			// trigger once in case already at top
+			onScrollEnd();
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		} catch (_e) {
+			// fallback: instant scroll then apply
+			window.scrollTo(0, 0);
+			calcAndApplyTop();
 		}
 
 		// Hide the TOC while scrolling back to top
@@ -443,29 +477,24 @@ const setup = () => {
 		initCustomScrollbar();
 		// Swup automatically handles banner replacement since it's in containers
 		// No need for manual banner update
+		
+		// Adjust main-grid position after content is replaced
+		setTimeout(adjustMainGridPosition, 50);
 	})
 	window.swup.hooks.on('page:view', () => {
-		// hide the temp high element when the transition is done
-		const heightExtend = document.getElementById('page-height-extend')
-		if (heightExtend) {
-			heightExtend.classList.remove('hidden')
-		}
-		
 		// Show the new banner after Swup replaces it
 		showBanner();
 	});
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		setTimeout(() => {
-			const heightExtend = document.getElementById('page-height-extend')
-			if (heightExtend) {
-				heightExtend.classList.add('hidden')
-			}
-
             // Just make the transition looks better
             const toc = document.getElementById('toc-wrapper');
             if (toc) {
                 toc.classList.remove('toc-not-ready')
             }
+            
+            // Adjust main-grid position after transition
+            adjustMainGridPosition();
         }, 200)
 	});
 }
@@ -524,6 +553,36 @@ window.onresize = () => {
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
 }
+
+// Handle main-grid position when before-grid is empty
+function adjustMainGridPosition() {
+	const metadataContainer = document.getElementById('post-metadata-container');
+	const mainGrid = document.getElementById('main-grid');
+	
+	if (!metadataContainer || !mainGrid) return;
+	
+	// Add transition for smooth animation
+	mainGrid.style.transition = 'transform 0.3s ease-out';
+	
+	// Check if the inner div has actual content
+	const innerDiv = metadataContainer.querySelector(':scope > div');
+	const hasContent = innerDiv && innerDiv.children.length > 0;
+	
+	// Check if we're on the home page
+	const isHomePage = pathsEqual(window.location.pathname, url('/'));
+	
+	if (!hasContent && !isHomePage) {
+		// Move main-grid up when before-grid is empty (non-home pages)
+		// Get the height of the metadata container including padding
+		const containerHeight = metadataContainer.getBoundingClientRect().height;
+		mainGrid.style.transform = `translateY(-${containerHeight}px)`;
+	} else {
+		mainGrid.style.transform = '';
+	}
+}
+
+// Run on initial load
+setTimeout(adjustMainGridPosition, 100);
 
 </script>
 
