@@ -17,6 +17,8 @@
 
 ## 技术栈
 
+*本网站已经不再使用 WordPress 作为驱动软件。该文本已经过时。*
+
 ### WordPress
 
 随着 Golang、Typescript、Node.JS、React 等新型前后端技术的兴起，越来越多网站开始放弃传统 PHP、jQuery 等技术，转投那些新兴技术。
