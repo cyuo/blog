@@ -506,8 +506,6 @@ function scrollFunction() {
 	// Use actual banner height (desktop: BANNER_HEIGHT_HOME; mobile: BANNER_HEIGHT)
 	const bannerHeightVH = window.innerWidth >= 1024 ? BANNER_HEIGHT_HOME : BANNER_HEIGHT;
 	const bannerHeightPx = window.innerHeight * (bannerHeightVH / 100);
-	const hasBanner = document.body.classList.contains('enable-banner');
-
 	if (backToTopBtn) {
 		if (document.body.scrollTop > bannerHeightPx || document.documentElement.scrollTop > bannerHeightPx) {
 			backToTopBtn.classList.remove('hide')
@@ -524,8 +522,6 @@ function scrollFunction() {
 		}
 	}
 
-	const wrapper = document.getElementById('main-content-wrapper');
-	const metadata = document.getElementById('post-metadata-container');
 	if (navbar) {
 		const currentY = (document.body.scrollTop || document.documentElement.scrollTop || 0);
 		const TOP_BUFFER = 32;   // 顶部始终显示
