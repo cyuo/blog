@@ -204,10 +204,11 @@ const bannerOffset =
 	}
 	/* Navbar show/hide animation support */
 	#navbar-wrapper {
-		@apply opacity-100 translate-y-0 transition-opacity transition-transform duration-500 ease-in-out transform-gpu will-change-transform;
+		@apply opacity-100 translate-y-0 duration-300 ease-in-out transform-gpu will-change-[transform,opacity];
+		transition-property: transform, opacity;
 	}
-	.navbar-hidden {
-		@apply opacity-0 -translate-y-16
+	#navbar-wrapper.navbar-hidden {
+		@apply opacity-0 -translate-y-full pointer-events-none;
 	}
 }
 </style>
@@ -406,40 +407,29 @@ const setup = () => {
 		}
 	})
 */
-	window.swup.hooks.on('link:click', () => {
-		// Remove the delay for the first time page load
-		document.documentElement.style.setProperty('--content-delay', '0ms')
-
-		// prevent elements from overlapping the navbar
-		if (!bannerEnabled) {
-			return
-		}
-		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
-		let navbar = document.getElementById('navbar-wrapper')
-		if (!navbar || !document.body.classList.contains('lg:is-home')) {
-			return
-		}
-		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
-		}
-	})
 	// Start fading out banner when page transition starts
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
-		if (pathsEqual(visit.to.url, url('/'))) {
+		const isToHome = pathsEqual(visit.to.url, url('/'));
+		const isToPost = visit.to.url.includes('/posts/');
+		const shouldShowBanner = isToHome || isToPost;
+
+		if (isToHome) {
 			bodyElement!.classList.add('lg:is-home');
 		} else {
 			bodyElement!.classList.remove('lg:is-home');
+		}
+		// keep enable-banner in sync for subsequent scroll threshold calc
+		if (shouldShowBanner) {
+			bodyElement!.classList.add('enable-banner');
+		} else {
+			bodyElement!.classList.remove('enable-banner');
 		}
 
 		// Move main-content-wrapper immediately so平移与滚动同步
 		const mainContentWrapper = document.getElementById('main-content-wrapper') as HTMLElement;
 		if (mainContentWrapper) {
-			const isToHome = pathsEqual(visit.to.url, url('/'));
-			const isToPost = visit.to.url.includes('/posts/');
-			const shouldShowBanner = isToHome || isToPost;
-
 			const newTop = shouldShowBanner
 				? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 				: 'calc(4.5rem + 2rem)';
@@ -471,6 +461,8 @@ const setup = () => {
 		
 		// Adjust main-grid position after content is replaced
 		setTimeout(adjustMainGridPosition, 50);
+		// Recompute navbar/toc state after layout settles
+		requestAnimationFrame(() => scrollFunction());
 	})
 	window.swup.hooks.on('page:view', () => {
 		// Show the new banner after Swup replaces it
@@ -486,6 +478,8 @@ const setup = () => {
             
             // Adjust main-grid position after transition
             adjustMainGridPosition();
+			// Recompute navbar/toc state after transition
+			scrollFunction();
         }, 200)
 	});
 }
@@ -500,6 +494,9 @@ if (window?.swup?.hooks) {
 let backToTopBtn = document.getElementById('back-to-top-btn');
 let toc = document.getElementById('toc-wrapper');
 let navbar = document.getElementById('navbar-wrapper')
+let lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+let lastDirection: 'up' | 'down' | null = null;  // 记录上次滚动方向
+let directionChangeY = lastScrollY;  // 记录方向改变时的位置
 function scrollFunction() {
 	// Use actual banner height (desktop: BANNER_HEIGHT_HOME; mobile: BANNER_HEIGHT)
 	const bannerHeightVH = window.innerWidth >= 1024 ? BANNER_HEIGHT_HOME : BANNER_HEIGHT;
@@ -522,17 +519,33 @@ function scrollFunction() {
 		}
 	}
 
-	if (!hasBanner) return
+	const wrapper = document.getElementById('main-content-wrapper');
+	const metadata = document.getElementById('post-metadata-container');
 	if (navbar) {
-		const NAVBAR_HEIGHT = 72
-		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
+		const currentY = (document.body.scrollTop || document.documentElement.scrollTop || 0);
+		const TOP_BUFFER = 32;   // 顶部始终显示
+		const DELTA = 50;        // 需要滚动的距离才触发显示/隐藏
 
-		let threshold = bannerHeightPx - NAVBAR_HEIGHT - MAIN_PANEL_EXCESS_HEIGHT - 16
-		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
-			navbar.classList.add('navbar-hidden')
-		} else {
-			navbar.classList.remove('navbar-hidden')
+		// 判断当前滚动方向
+		const currentDirection: 'up' | 'down' | null = currentY > lastScrollY ? 'down' : currentY < lastScrollY ? 'up' : null;
+		
+		// 如果方向改变了，重置参考点
+		if (currentDirection && currentDirection !== lastDirection) {
+			directionChangeY = lastScrollY;
+			lastDirection = currentDirection;
 		}
+
+		// 计算从方向改变点开始的累积距离
+		const totalDiff = currentY - directionChangeY;
+
+		if (currentY <= TOP_BUFFER) {
+			navbar.classList.remove('navbar-hidden');
+		} else if (totalDiff > DELTA) {
+			navbar.classList.add('navbar-hidden');      // 向下滚动累积超过阈值
+		} else if (totalDiff < -DELTA) {
+			navbar.classList.remove('navbar-hidden');   // 向上滚动累积超过阈值
+		}
+		lastScrollY = currentY;
 	}
 }
 window.onscroll = scrollFunction
@@ -542,6 +555,8 @@ window.onresize = () => {
 	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+	// Re-evaluate navbar/toc visibility on resize (responsive)
+	requestAnimationFrame(() => scrollFunction());
 }
 
 // Handle main-grid position when before-grid is empty
@@ -573,6 +588,11 @@ function adjustMainGridPosition() {
 
 // Run on initial load
 setTimeout(adjustMainGridPosition, 100);
+// Reset navbar state to current scroll position on load (avoid stale lastScrollY)
+requestAnimationFrame(() => {
+	lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+	scrollFunction();
+});
 
 </script>
 
