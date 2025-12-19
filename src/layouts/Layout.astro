@@ -29,7 +29,8 @@ interface Props {
 	enableBanner?: boolean;
 }
 
-let { title, banner, description, lang, setOGTypeArticle, enableBanner } = Astro.props;
+let { title, banner, description, lang, setOGTypeArticle, enableBanner } =
+	Astro.props;
 
 // apply a class to the body element to decide the height of the banner, only used for initial page load
 // Swup can update the body for each page visit, but it's after the page transition, causing a delay for banner height change
@@ -44,7 +45,8 @@ if (!banner || typeof banner !== "string" || banner.trim() === "") {
 }
 
 // Use the passed enableBanner prop if provided, otherwise fall back to config
-const finalEnableBanner = enableBanner !== undefined ? enableBanner : siteConfig.banner.enable;
+const finalEnableBanner =
+	enableBanner !== undefined ? enableBanner : siteConfig.banner.enable;
 
 let pageTitle: string;
 if (title) {
@@ -198,9 +200,12 @@ const bannerOffset =
 	.enable-banner #top-row {
 		@apply h-[calc(var(--banner-height-home)_-_4.5rem)]
 	}
-	/* Sidebar sticky 位置统一为与首页一致的相对位置 */
+	/* Sidebar sticky 位置：基准 1rem，考虑 banner 平移 & main-grid 上移 */
 	#sidebar-sticky {
-		@apply top-[calc(1rem_-_var(--banner-height-extend))];
+		top: calc(1rem + var(--main-grid-offset, 0px));
+	}
+	.enable-banner #sidebar-sticky {
+		top: calc(1rem - var(--banner-height-extend) + var(--main-grid-offset, 0px));
 	}
 	/* Navbar show/hide animation support */
 	#navbar-wrapper {
@@ -581,8 +586,10 @@ function adjustMainGridPosition() {
 		// Get the height of the metadata container including padding
 		const containerHeight = metadataContainer.getBoundingClientRect().height;
 		mainGrid.style.transform = `translateY(-${containerHeight}px)`;
+		document.documentElement.style.setProperty('--main-grid-offset', `${containerHeight}px`);
 	} else {
 		mainGrid.style.transform = '';
+		document.documentElement.style.setProperty('--main-grid-offset', '0px');
 	}
 }
 
