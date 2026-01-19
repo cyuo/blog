@@ -4,9 +4,10 @@ import tailwind from "@astrojs/tailwind";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
+import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
-import { defineConfig } from "astro/config";
+import min from "astro-min";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -16,13 +17,13 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig } from "./src/config.ts";
+import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
-import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 
 // https://astro.build/config
 export default defineConfig({
@@ -33,12 +34,32 @@ export default defineConfig({
 		tailwind({
 			nesting: true,
 		}),
+		// HTML/CSS/JS 压缩和注释删除
+		min({
+			html: {
+				removeComments: true, // 删除 HTML 注释
+				collapseWhitespace: true, // 压缩空白字符
+				minifyCSS: true, // 压缩内联 CSS
+				minifyJS: true, // 压缩内联 JavaScript
+			},
+			css: {
+				// CSS 压缩选项
+			},
+			js: {
+				// JS 压缩选项（会与 vite build.terserOptions 配合使用）
+			},
+		}),
 		swup({
 			theme: false,
 			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
 			// the default value `transition-` cause transition delay
 			// when the Tailwind class `transition-all` is used
-			containers: ["#swup-container", "#toc", "#banner", "#post-metadata-container"],
+			containers: [
+				"#swup-container",
+				"#toc",
+				"#banner",
+				"#post-metadata-container",
+			],
 			smoothScrolling: true,
 			cache: true,
 			preload: true,
@@ -61,12 +82,12 @@ export default defineConfig({
 				pluginCollapsibleSections(),
 				pluginLineNumbers(),
 				pluginLanguageBadge(),
-				pluginCustomCopyButton()
+				pluginCustomCopyButton(),
 			],
 			defaultProps: {
 				wrap: true,
 				overridesByLang: {
-					'shellsession': {
+					shellsession: {
 						showLineNumbers: false,
 					},
 				},
@@ -76,7 +97,8 @@ export default defineConfig({
 				borderRadius: "0.75rem",
 				borderColor: "none",
 				codeFontSize: "0.875rem",
-				codeFontFamily: "'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+				codeFontFamily:
+					"'JetBrains Mono Variable', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
 				codeLineHeight: "1.5rem",
 				frames: {
 					editorBackground: "var(--codeblock-bg)",
@@ -87,19 +109,19 @@ export default defineConfig({
 					editorActiveTabIndicatorBottomColor: "var(--primary)",
 					editorActiveTabIndicatorTopColor: "none",
 					editorTabBarBorderBottomColor: "var(--codeblock-topbar-bg)",
-					terminalTitlebarBorderBottomColor: "none"
+					terminalTitlebarBorderBottomColor: "none",
 				},
 				textMarkers: {
 					delHue: 0,
 					insHue: 180,
-					markHue: 250
-				}
+					markHue: 250,
+				},
 			},
 			frames: {
 				showCopyToClipboardButton: false,
-			}
+			},
 		}),
-        svelte(),
+		svelte(),
 		sitemap(),
 	],
 	markdown: {
@@ -155,6 +177,33 @@ export default defineConfig({
 	},
 	vite: {
 		build: {
+			// 使用 terser 进行代码压缩和混淆
+			minify: "terser",
+			// 关闭 sourcemap 以进一步减小文件大小
+			sourcemap: false,
+			// Terser 配置选项
+			terserOptions: {
+				format: {
+					// 删除所有注释
+					comments: false,
+				},
+				// 启用变量名混淆（随机命名）
+				mangle: {
+					toplevel: true, // 混淆顶级作用域的变量名
+					// 注意：混淆属性可能会破坏某些代码，如果遇到问题可以注释掉下面这行
+					// properties: true, // 混淆对象属性名（谨慎使用，可能破坏代码）
+				},
+				compress: {
+					// 删除 console 语句
+					drop_console: true,
+					// 删除 debugger 语句
+					drop_debugger: true,
+					// 删除未使用的代码
+					dead_code: true,
+					// 其他压缩选项
+					passes: 2, // 多次压缩以获得更好的效果
+				},
+			},
 			rollupOptions: {
 				onwarn(warning, warn) {
 					// temporarily suppress this warning
