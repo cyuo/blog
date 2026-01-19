@@ -16,6 +16,7 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig } from "./src/config.ts";
+import { htmlCleanupIntegration } from "./src/integrations/html-cleanup.ts";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -30,7 +31,6 @@ export default defineConfig({
 	base: "/",
 	trailingSlash: "always",
 	// 使用 Astro 内置的 HTML 压缩（压缩空白，兼容 swup）
-	// 注意：不会删除 HTML 注释，因为与 swup 兼容的注释删除方案都存在问题
 	compressHTML: true,
 	integrations: [
 		tailwind({
@@ -112,6 +112,8 @@ export default defineConfig({
 		}),
 		svelte(),
 		sitemap(),
+		// HTML 清理：删除注释和多余换行（在构建完成后执行）
+		htmlCleanupIntegration(),
 	],
 	markdown: {
 		remarkPlugins: [
@@ -168,9 +170,7 @@ export default defineConfig({
 		build: {
 			// 使用 terser 进行代码压缩和混淆
 			minify: "terser",
-			// 关闭 sourcemap 以进一步减小文件大小
 			sourcemap: false,
-			// Terser 配置选项
 			terserOptions: {
 				format: {
 					// 删除所有注释
@@ -178,18 +178,13 @@ export default defineConfig({
 				},
 				mangle: {
 					toplevel: true, // 混淆顶级作用域的变量名
-					// 注意：混淆属性可能会破坏某些代码，如果遇到问题可以注释掉下面这行
 					// properties: true, // 混淆对象属性名（谨慎使用，可能破坏代码）
 				},
 				compress: {
-					// 删除 console 语句
 					drop_console: true,
-					// 删除 debugger 语句
 					drop_debugger: true,
-					// 删除未使用的代码
 					dead_code: true,
-					// 其他压缩选项
-					passes: 2, // 多次压缩以获得更好的效果
+					passes: 2,
 				},
 			},
 			rollupOptions: {
