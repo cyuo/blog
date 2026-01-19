@@ -8,11 +8,7 @@ import { Icon } from "astro-icon/components";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import TOC from "../components/widget/TOC.astro";
 import { siteConfig } from "../config";
-import {
-	BANNER_HEIGHT,
-	BANNER_HEIGHT_EXTEND,
-	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
-} from "../constants/constants";
+import { MAIN_PANEL_OVERLAPS_BANNER_HEIGHT } from "../constants/constants";
 import { pathsEqual, url } from "../utils/url-utils";
 import Layout from "./Layout.astro";
 
@@ -47,7 +43,7 @@ const isPostPage = Astro.url.pathname.includes("/posts/");
 const showBanner = siteConfig.banner.enable && (isHomePage || isPostPage);
 
 const mainPanelTop = showBanner
-	? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
+	? `calc(var(--banner-height-current) - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
 	: "calc(4.5rem + 2rem)"; // navbar height (4.5rem) + gap (2rem)
 ---
 
@@ -65,7 +61,7 @@ const mainPanelTop = showBanner
 <div
 	id="banner-wrapper"
 	class={`absolute z-10 w-full overflow-hidden transition duration-700`}
-	style={`top: -${BANNER_HEIGHT_EXTEND}vh; opacity: ${showBanner ? 1 : 0}; visibility: ${showBanner ? 'visible' : 'hidden'}; pointer-events: ${showBanner ? 'auto' : 'none'};`}
+	style={`top: calc(-1 * var(--banner-height-extend));`}
 >
 	<div id="banner" class="transition-swup-fade w-full h-full opacity-0 scale-105">
 		{showBanner && <ImageWrapper
