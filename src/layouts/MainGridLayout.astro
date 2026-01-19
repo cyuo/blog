@@ -74,10 +74,10 @@ const mainPanelTop = showBanner
 		</ImageWrapper>}
 
 		{isHomePage && (
-			<div class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center px-4 transition-swup-fade">
-				<div class="text-white drop-shadow-[0_6px_16px_rgba(0,0,0,0.5)] text-3xl md:text-5xl font-bold tracking-tight">
+			<div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 transition-swup-fade">
+				<h1 class="center-text glitch is-glitching Ubuntu-font" data-text={siteConfig.title}>
 					{siteConfig.title}
-				</div>
+				</h1>
 				{siteConfig.subtitle && (
 					<div class="mt-3 text-white/85 drop-shadow-[0_4px_12px_rgba(0,0,0,0.45)] text-lg md:text-2xl font-medium">
 						{siteConfig.subtitle}
