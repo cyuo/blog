@@ -19,7 +19,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "/img/demo-banner.png", // Path starting with '/' is relative to the /public directory
+		src: "/img/111024784_p0.png", // Path starting with '/' is relative to the /public directory
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: false, // Display the credit text of the banner image
