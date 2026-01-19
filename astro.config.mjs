@@ -7,7 +7,6 @@ import swup from "@swup/astro";
 import { defineConfig } from "astro/config";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
-import min from "astro-min";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -30,24 +29,12 @@ export default defineConfig({
 	site: "https://zrn.net/",
 	base: "/",
 	trailingSlash: "always",
+	// 使用 Astro 内置的 HTML 压缩（压缩空白，兼容 swup）
+	// 注意：不会删除 HTML 注释，因为与 swup 兼容的注释删除方案都存在问题
+	compressHTML: true,
 	integrations: [
 		tailwind({
 			nesting: true,
-		}),
-		// HTML/CSS/JS 压缩和注释删除
-		min({
-			html: {
-				removeComments: true, // 删除 HTML 注释
-				collapseWhitespace: true, // 压缩空白字符
-				minifyCSS: true, // 压缩内联 CSS
-				minifyJS: true, // 压缩内联 JavaScript
-			},
-			css: {
-				// CSS 压缩选项
-			},
-			js: {
-				// JS 压缩选项（会与 vite build.terserOptions 配合使用）
-			},
 		}),
 		swup({
 			theme: false,
@@ -67,6 +54,8 @@ export default defineConfig({
 			updateHead: true,
 			updateBodyClass: false,
 			globalInstance: true,
+			// 启用脚本重新加载，确保压缩后的脚本能正常工作
+			reloadScripts: true,
 		}),
 		icon({
 			include: {
@@ -187,7 +176,6 @@ export default defineConfig({
 					// 删除所有注释
 					comments: false,
 				},
-				// 启用变量名混淆（随机命名）
 				mangle: {
 					toplevel: true, // 混淆顶级作用域的变量名
 					// 注意：混淆属性可能会破坏某些代码，如果遇到问题可以注释掉下面这行
