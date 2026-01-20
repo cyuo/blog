@@ -51,8 +51,8 @@ const mainPanelTop = showBanner
 
 <!-- Navbar -->
 <slot slot="head" name="head"></slot>
-<div id="top-row" class="z-50 pointer-events-none relative max-w-[var(--page-width)] px-0 md:px-4 mx-auto" class:list={[""]}>
-    <div id="navbar-wrapper" class="pointer-events-auto sticky top-0">
+<div id="navbar-wrapper" class="fixed top-0 left-0 right-0 z-50 pointer-events-auto">
+    <div class="max-w-[var(--page-width)] px-0 md:px-4 mx-auto">
         <Navbar></Navbar>
     </div>
 </div>

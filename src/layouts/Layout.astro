@@ -480,45 +480,36 @@ const setup = () => {
 			});
 		}
 
-		// Smoothly scroll to top at navigation start to avoid mid-way jump
-		try {
-			window.scrollTo({ top: 0, behavior: 'smooth' });
-		} catch (_e) {
-			window.scrollTo(0, 0);
-		}
-
 		// Hide the TOC while scrolling back to top
 		let toc = document.getElementById('toc-wrapper');
 		if (toc) {
 			toc.classList.add('toc-not-ready')
 		}
 	});
-	
+
 	window.swup.hooks.on('content:replace', async () => {
 		initCustomScrollbar();
-		// Swup automatically handles banner replacement since it's in containers
-		// No need for manual banner update
-		
-		// Adjust main-grid position after content is replaced
-		setTimeout(adjustMainGridPosition, 50);
-		// Recompute navbar/toc state after layout settles
-		requestAnimationFrame(() => scrollFunction());
+
+		scheduleAdjustMainGrid(50);
+		requestAnimationFrame(() => {
+			lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+			directionChangeY = lastScrollY;
+			scrollFunction();
+		});
 	})
 	window.swup.hooks.on('page:view', () => {
-		// Show the new banner after Swup replaces it
 		showBanner();
 	});
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		setTimeout(() => {
-            // Just make the transition looks better
             const toc = document.getElementById('toc-wrapper');
             if (toc) {
                 toc.classList.remove('toc-not-ready')
             }
-            
-            // Adjust main-grid position after transition
-            adjustMainGridPosition();
-			// Recompute navbar/toc state after transition
+
+            scheduleAdjustMainGrid(100);
+			lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+			directionChangeY = lastScrollY;
 			scrollFunction();
         }, 200)
 	});
@@ -537,6 +528,8 @@ let navbar = document.getElementById('navbar-wrapper')
 let lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
 let lastDirection: 'up' | 'down' | null = null;  // 记录上次滚动方向
 let directionChangeY = lastScrollY;  // 记录方向改变时的位置
+let scrollTicking = false;  // 节流标志
+
 function scrollFunction() {
 	// Use actual banner height (desktop: BANNER_HEIGHT_DESKTOP; mobile: BANNER_HEIGHT)
 	const bannerHeightVH = window.innerWidth >= 1024 ? BANNER_HEIGHT_DESKTOP : BANNER_HEIGHT;
@@ -559,32 +552,37 @@ function scrollFunction() {
 
 	if (navbar) {
 		const currentY = (document.body.scrollTop || document.documentElement.scrollTop || 0);
-		const TOP_BUFFER = 32;   // 顶部始终显示
-		const DELTA = 50;        // 需要滚动的距离才触发显示/隐藏
+		const TOP_BUFFER = 32;
+		const DELTA = 50;
 
-		// 判断当前滚动方向
 		const currentDirection: 'up' | 'down' | null = currentY > lastScrollY ? 'down' : currentY < lastScrollY ? 'up' : null;
-		
-		// 如果方向改变了，重置参考点
+
 		if (currentDirection && currentDirection !== lastDirection) {
-			directionChangeY = lastScrollY;
+			directionChangeY = currentY;
 			lastDirection = currentDirection;
 		}
 
-		// 计算从方向改变点开始的累积距离
 		const totalDiff = currentY - directionChangeY;
 
 		if (currentY <= TOP_BUFFER) {
 			navbar.classList.remove('navbar-hidden');
 		} else if (totalDiff > DELTA) {
-			navbar.classList.add('navbar-hidden');      // 向下滚动累积超过阈值
+			navbar.classList.add('navbar-hidden');
 		} else if (totalDiff < -DELTA) {
-			navbar.classList.remove('navbar-hidden');   // 向上滚动累积超过阈值
+			navbar.classList.remove('navbar-hidden');
 		}
 		lastScrollY = currentY;
 	}
+	scrollTicking = false;
 }
-window.onscroll = scrollFunction
+
+// 使用 requestAnimationFrame 节流滚动事件
+window.onscroll = () => {
+	if (!scrollTicking) {
+		requestAnimationFrame(scrollFunction);
+		scrollTicking = true;
+	}
+}
 
 window.onresize = () => {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
@@ -596,22 +594,23 @@ window.onresize = () => {
 }
 
 // Handle main-grid position when before-grid is empty
+let adjustGridTimeout: number | null = null;
 function adjustMainGridPosition() {
 	const metadataContainer = document.getElementById('post-metadata-container');
 	const mainGrid = document.getElementById('main-grid');
-	
+
 	if (!metadataContainer || !mainGrid) return;
-	
+
 	// Add transition for smooth animation
 	mainGrid.style.transition = 'transform 0.3s ease-out';
-	
+
 	// Check if the inner div has actual content
 	const innerDiv = metadataContainer.querySelector(':scope > div');
 	const hasContent = innerDiv && innerDiv.children.length > 0;
-	
+
 	// Check if we're on the home page
 	const isHomePage = pathsEqual(window.location.pathname, url('/'));
-	
+
 	if (!hasContent && !isHomePage) {
 		// Move main-grid up when before-grid is empty (non-home pages)
 		// Get the height of the metadata container including padding
@@ -624,11 +623,22 @@ function adjustMainGridPosition() {
 	}
 }
 
+// 防抖版本的 adjustMainGridPosition
+function scheduleAdjustMainGrid(delay: number = 50) {
+	if (adjustGridTimeout !== null) {
+		clearTimeout(adjustGridTimeout);
+	}
+	adjustGridTimeout = window.setTimeout(() => {
+		adjustMainGridPosition();
+		adjustGridTimeout = null;
+	}, delay);
+}
+
 // Run on initial load
-setTimeout(adjustMainGridPosition, 100);
-// Reset navbar state to current scroll position on load (avoid stale lastScrollY)
+scheduleAdjustMainGrid(100);
 requestAnimationFrame(() => {
 	lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+	directionChangeY = lastScrollY;
 	scrollFunction();
 });
 
@@ -677,6 +687,10 @@ const setup = () => {
 		createPhotoSwipe()
 	}
 	window.swup.hooks.on("page:view", () => {
+		// 先销毁旧实例再创建新的，避免重复
+		if (lightbox) {
+			lightbox.destroy()
+		}
 		createPhotoSwipe()
 	})
 

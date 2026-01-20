@@ -38,9 +38,7 @@ export default defineConfig({
 		}),
 		swup({
 			theme: false,
-			animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
-			// the default value `transition-` cause transition delay
-			// when the Tailwind class `transition-all` is used
+			animationClass: "transition-swup-",
 			containers: [
 				"#swup-container",
 				"#toc",
@@ -54,8 +52,7 @@ export default defineConfig({
 			updateHead: true,
 			updateBodyClass: false,
 			globalInstance: true,
-			// 启用脚本重新加载，确保压缩后的脚本能正常工作
-			reloadScripts: true,
+			reloadScripts: false,
 		}),
 		icon({
 			include: {
