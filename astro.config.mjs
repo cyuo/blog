@@ -119,6 +119,10 @@ export default defineConfig({
 				minifyJS: true,
 				sortAttributes: true,
 				sortClassName: true,
+				ignoreCustomFragments: [
+					/<pre[^>]*>[\s\S]*?<\/pre>/,
+					/<code[^>]*>[\s\S]*?<\/code>/,
+				],
 			},
 			CSS: true,
 			JavaScript: {
