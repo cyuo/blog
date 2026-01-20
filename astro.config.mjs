@@ -5,6 +5,7 @@ import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-s
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
 import swup from "@swup/astro";
 import { defineConfig } from "astro/config";
+import compress from "astro-compress";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
@@ -16,7 +17,6 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig } from "./src/config.ts";
-import { htmlCleanupIntegration } from "./src/integrations/html-cleanup.ts";
 import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
 import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
@@ -30,8 +30,6 @@ export default defineConfig({
 	site: "https://zrn.net/",
 	base: "/",
 	trailingSlash: "always",
-	// 使用 Astro 内置的 HTML 压缩（压缩空白，兼容 swup）
-	compressHTML: true,
 	integrations: [
 		tailwind({
 			nesting: true,
@@ -109,8 +107,34 @@ export default defineConfig({
 		}),
 		svelte(),
 		sitemap(),
-		// HTML 清理：删除注释和多余换行（在构建完成后执行）
-		htmlCleanupIntegration(),
+		// 使用 astro-compress 进行全面压缩（HTML/CSS/JS/SVG/图片）
+		compress({
+			HTML: {
+				removeComments: true,
+				collapseWhitespace: true,
+				removeAttributeQuotes: true,
+				collapseBooleanAttributes: true,
+				removeEmptyAttributes: true,
+				minifyCSS: true,
+				minifyJS: true,
+				sortAttributes: true,
+				sortClassName: true,
+			},
+			CSS: true,
+			JavaScript: {
+				compress: {
+					drop_console: true,
+					drop_debugger: true,
+					dead_code: true,
+					passes: 2,
+				},
+				mangle: {
+					toplevel: true,
+				},
+			},
+			SVG: true,
+			Image: false, // 图片压缩可能较慢，按需启用
+		}),
 	],
 	markdown: {
 		remarkPlugins: [
