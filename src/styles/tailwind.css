@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   /* Override Tailwind v4's default antialiased to match v3 behavior */
   * {
