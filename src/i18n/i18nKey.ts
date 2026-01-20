@@ -35,6 +35,23 @@ enum I18nKey {
 	author = "author",
 	publishedAt = "publishedAt",
 	license = "license",
+
+	// Version page
+	versionInfo = "versionInfo",
+	application = "application",
+	name = "name",
+	version = "version",
+	mode = "mode",
+	development = "development",
+	production = "production",
+	runtimeEnvironment = "runtimeEnvironment",
+	nodejs = "nodejs",
+	packageManager = "packageManager",
+	platform = "platform",
+	architecture = "architecture",
+	dependencies = "dependencies",
+	devDependencies = "devDependencies",
+	package = "package",
 }
 
 export default I18nKey;

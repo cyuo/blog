@@ -38,4 +38,21 @@ export const en: Translation = {
 	[Key.author]: "Author",
 	[Key.publishedAt]: "Published at",
 	[Key.license]: "License",
+
+	// Version page
+	[Key.versionInfo]: "Version Information",
+	[Key.application]: "Application",
+	[Key.name]: "Name",
+	[Key.version]: "Version",
+	[Key.mode]: "Mode",
+	[Key.development]: "Development",
+	[Key.production]: "Production",
+	[Key.runtimeEnvironment]: "Runtime Environment",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "Package Manager",
+	[Key.platform]: "Platform",
+	[Key.architecture]: "Architecture",
+	[Key.dependencies]: "Dependencies",
+	[Key.devDependencies]: "Development Dependencies",
+	[Key.package]: "Package",
 };

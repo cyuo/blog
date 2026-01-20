@@ -37,4 +37,21 @@ export const vi: Translation = {
 	[Key.author]: "Tác giả",
 	[Key.publishedAt]: "Đăng vào lúc",
 	[Key.license]: "Giấy phép bản quyền",
+
+	// Version page
+	[Key.versionInfo]: "Thông tin phiên bản",
+	[Key.application]: "Ứng dụng",
+	[Key.name]: "Tên",
+	[Key.version]: "Phiên bản",
+	[Key.mode]: "Chế độ",
+	[Key.development]: "Phát triển",
+	[Key.production]: "Sản xuất",
+	[Key.runtimeEnvironment]: "Môi trường chạy",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "Trình quản lý gói",
+	[Key.platform]: "Nền tảng",
+	[Key.architecture]: "Kiến trúc",
+	[Key.dependencies]: "Phụ thuộc",
+	[Key.devDependencies]: "Phụ thuộc phát triển",
+	[Key.package]: "Gói",
 };

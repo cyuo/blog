@@ -38,4 +38,21 @@ export const zh_CN: Translation = {
 	[Key.author]: "作者",
 	[Key.publishedAt]: "发布于",
 	[Key.license]: "许可协议",
+
+	// Version page
+	[Key.versionInfo]: "版本信息",
+	[Key.application]: "应用程序",
+	[Key.name]: "名称",
+	[Key.version]: "版本",
+	[Key.mode]: "模式",
+	[Key.development]: "开发",
+	[Key.production]: "生产",
+	[Key.runtimeEnvironment]: "运行环境",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "包管理器",
+	[Key.platform]: "平台",
+	[Key.architecture]: "架构",
+	[Key.dependencies]: "依赖项",
+	[Key.devDependencies]: "开发依赖项",
+	[Key.package]: "包",
 };

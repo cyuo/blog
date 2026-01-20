@@ -37,4 +37,21 @@ export const ja: Translation = {
 	[Key.author]: "作者",
 	[Key.publishedAt]: "公開日",
 	[Key.license]: "ライセンス",
+
+	// Version page
+	[Key.versionInfo]: "バージョン情報",
+	[Key.application]: "アプリケーション",
+	[Key.name]: "名前",
+	[Key.version]: "バージョン",
+	[Key.mode]: "モード",
+	[Key.development]: "開発",
+	[Key.production]: "本番",
+	[Key.runtimeEnvironment]: "実行環境",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "パッケージマネージャー",
+	[Key.platform]: "プラットフォーム",
+	[Key.architecture]: "アーキテクチャ",
+	[Key.dependencies]: "依存関係",
+	[Key.devDependencies]: "開発依存関係",
+	[Key.package]: "パッケージ",
 };

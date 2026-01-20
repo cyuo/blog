@@ -39,4 +39,21 @@ export const id: Translation = {
 	[Key.author]: "Penulis",
 	[Key.publishedAt]: "Diterbitkan pada",
 	[Key.license]: "Lisensi",
+
+	// Version page
+	[Key.versionInfo]: "Informasi Versi",
+	[Key.application]: "Aplikasi",
+	[Key.name]: "Nama",
+	[Key.version]: "Versi",
+	[Key.mode]: "Mode",
+	[Key.development]: "Pengembangan",
+	[Key.production]: "Produksi",
+	[Key.runtimeEnvironment]: "Lingkungan Runtime",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "Manajer Paket",
+	[Key.platform]: "Platform",
+	[Key.architecture]: "Arsitektur",
+	[Key.dependencies]: "Dependensi",
+	[Key.devDependencies]: "Dependensi Pengembangan",
+	[Key.package]: "Paket",
 };

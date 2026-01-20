@@ -37,4 +37,21 @@ export const tr: Translation = {
 	[Key.author]: "Yazar",
 	[Key.publishedAt]: "Yayınlanma:",
 	[Key.license]: "Lisans",
+
+	// Version page
+	[Key.versionInfo]: "Sürüm Bilgisi",
+	[Key.application]: "Uygulama",
+	[Key.name]: "İsim",
+	[Key.version]: "Sürüm",
+	[Key.mode]: "Mod",
+	[Key.development]: "Geliştirme",
+	[Key.production]: "Üretim",
+	[Key.runtimeEnvironment]: "Çalışma Ortamı",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "Paket Yöneticisi",
+	[Key.platform]: "Platform",
+	[Key.architecture]: "Mimari",
+	[Key.dependencies]: "Bağımlılıklar",
+	[Key.devDependencies]: "Geliştirme Bağımlılıkları",
+	[Key.package]: "Paket",
 };

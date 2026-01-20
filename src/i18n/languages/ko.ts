@@ -37,4 +37,21 @@ export const ko: Translation = {
 	[Key.author]: "저자",
 	[Key.publishedAt]: "게시일",
 	[Key.license]: "라이선스",
+
+	// Version page
+	[Key.versionInfo]: "버전 정보",
+	[Key.application]: "애플리케이션",
+	[Key.name]: "이름",
+	[Key.version]: "버전",
+	[Key.mode]: "모드",
+	[Key.development]: "개발",
+	[Key.production]: "프로덕션",
+	[Key.runtimeEnvironment]: "런타임 환경",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "패키지 매니저",
+	[Key.platform]: "플랫폼",
+	[Key.architecture]: "아키텍처",
+	[Key.dependencies]: "의존성",
+	[Key.devDependencies]: "개발 의존성",
+	[Key.package]: "패키지",
 };

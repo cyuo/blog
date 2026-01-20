@@ -37,4 +37,21 @@ export const th: Translation = {
 	[Key.author]: "ผู้เขียน",
 	[Key.publishedAt]: "เผยแพร่เมื่อ",
 	[Key.license]: "สัญญาอนุญาต",
+
+	// Version page
+	[Key.versionInfo]: "ข้อมูลเวอร์ชัน",
+	[Key.application]: "แอปพลิเคชัน",
+	[Key.name]: "ชื่อ",
+	[Key.version]: "เวอร์ชัน",
+	[Key.mode]: "โหมด",
+	[Key.development]: "การพัฒนา",
+	[Key.production]: "การผลิต",
+	[Key.runtimeEnvironment]: "สภาพแวดล้อมรันไทม์",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "ตัวจัดการแพ็คเกจ",
+	[Key.platform]: "แพลตฟอร์ม",
+	[Key.architecture]: "สถาปัตยกรรม",
+	[Key.dependencies]: "การพึ่งพา",
+	[Key.devDependencies]: "การพึ่งพาสำหรับการพัฒนา",
+	[Key.package]: "แพ็คเกจ",
 };

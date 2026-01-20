@@ -10,7 +10,12 @@ import { friends } from "../config";
 <MainGridLayout title={i18n(I18nKey.friends)} description="友情链接">
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full">
-            <h1 class="text-3xl font-bold mb-6 text-90">{i18n(I18nKey.friends)}</h1>
+            <h1 id="friends" class="text-3xl font-bold mb-6 text-black/90 dark:text-white/90">
+                {i18n(I18nKey.friends)}
+                <a href="#friends" class="anchor">
+                    <span class="anchor-icon" data-pagefind-ignore>#</span>
+                </a>
+            </h1>
             
             {friends.length === 0 ? (
                 <div class="text-center py-12 text-50">
@@ -58,3 +63,37 @@ import { friends } from "../config";
         </div>
     </div>
 </MainGridLayout>
+
+<style>
+    /* Anchor styles matching markdown.css */
+    h1 {
+        .anchor {
+            @apply transition -m-0.5 ml-[0.2ch] p-0.5 select-none opacity-0 relative font-medium text-[var(--primary)] !important;
+            text-decoration: underline;
+            text-decoration-color: var(--link-underline);
+            text-decoration-style: dashed;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 4px;
+            display: inline-block;
+            box-decoration-break: clone;
+            -webkit-box-decoration-break: clone;
+
+            .anchor-icon {
+                @apply mx-[0.45ch] !important;
+            }
+
+            &:hover, &:active {
+                text-decoration-color: transparent;
+                background: var(--btn-plain-bg-hover);
+                border-bottom: 1px dashed var(--link-hover);
+                text-decoration: none;
+            }
+        }
+
+        &:hover {
+            .anchor {
+                @apply opacity-100 !important;
+            }
+        }
+    }
+</style>

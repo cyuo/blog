@@ -39,4 +39,21 @@ export const es: Translation = {
 	[Key.author]: "Autor",
 	[Key.publishedAt]: "Publicado el",
 	[Key.license]: "Licencia",
+
+	// Version page
+	[Key.versionInfo]: "Información de versión",
+	[Key.application]: "Aplicación",
+	[Key.name]: "Nombre",
+	[Key.version]: "Versión",
+	[Key.mode]: "Modo",
+	[Key.development]: "Desarrollo",
+	[Key.production]: "Producción",
+	[Key.runtimeEnvironment]: "Entorno de ejecución",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "Gestor de paquetes",
+	[Key.platform]: "Plataforma",
+	[Key.architecture]: "Arquitectura",
+	[Key.dependencies]: "Dependencias",
+	[Key.devDependencies]: "Dependencias de desarrollo",
+	[Key.package]: "Paquete",
 };

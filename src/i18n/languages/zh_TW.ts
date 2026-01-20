@@ -37,4 +37,21 @@ export const zh_TW: Translation = {
 	[Key.author]: "作者",
 	[Key.publishedAt]: "發佈於",
 	[Key.license]: "許可協議",
+
+	// Version page
+	[Key.versionInfo]: "版本資訊",
+	[Key.application]: "應用程式",
+	[Key.name]: "名稱",
+	[Key.version]: "版本",
+	[Key.mode]: "模式",
+	[Key.development]: "開發",
+	[Key.production]: "生產",
+	[Key.runtimeEnvironment]: "執行環境",
+	[Key.nodejs]: "Node.js",
+	[Key.packageManager]: "套件管理器",
+	[Key.platform]: "平台",
+	[Key.architecture]: "架構",
+	[Key.dependencies]: "依賴項",
+	[Key.devDependencies]: "開發依賴項",
+	[Key.package]: "套件",
 };
