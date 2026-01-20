@@ -1,4 +1,5 @@
 ---
+import ImageWrapper from "@components/misc/ImageWrapper.astro";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
@@ -27,11 +28,10 @@ import { friends } from "../config";
                         >
                             <div class="flex items-start gap-4">
                                 {friend.avatar && (
-                                    <img
+                                    <ImageWrapper
                                         src={friend.avatar}
                                         alt={friend.name}
-                                        class="w-12 h-12 rounded-full object-cover flex-shrink-0"
-                                        loading="lazy"
+                                        class="w-12 h-12 rounded-full"
                                     />
                                 )}
                                 <div class="flex-1 min-w-0">

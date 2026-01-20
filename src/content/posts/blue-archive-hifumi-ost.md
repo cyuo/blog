@@ -2,7 +2,7 @@
 title: 【Bilibili / 中日字幕】《蔚蓝档案》羁绊对白vol.3「我就是喜欢！」阿慈谷日富美个人曲
 published: 2025-08-20
 description: ''
-image: '/img/60fca6755eadfdd0ffb27a6edad8c753177964e9.jpg'
+image: 'assets/img/60fca6755eadfdd0ffb27a6edad8c753177964e9.jpg'
 tags: [loli, games, moe, blue archive, music]
 category: '音乐'
 draft: false 

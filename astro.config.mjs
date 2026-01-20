@@ -24,12 +24,21 @@ import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
+import { remarkOptimizePublicImages } from "./src/plugins/remark-optimize-public-images.mjs";
 
 // https://astro.build/config
 export default defineConfig({
 	site: "https://zrn.net/",
 	base: "/",
 	trailingSlash: "always",
+	image: {
+		service: {
+			entrypoint: "astro/assets/services/sharp",
+			config: {
+				limitInputPixels: false,
+			},
+		},
+	},
 	integrations: [
 		tailwind({
 			nesting: true,
@@ -137,7 +146,18 @@ export default defineConfig({
 				},
 			},
 			SVG: true,
-			Image: false, // 图片压缩可能较慢，按需启用
+			Image: {
+				jpg: {
+					quality: 100, // 无损质量
+				},
+				png: {
+					quality: 100, // 无损质量
+				},
+				webp: {
+					lossless: true, // WebP 无损压缩
+				},
+				avif: false, // 不转换为 AVIF
+			},
 		}),
 	],
 	markdown: {
@@ -149,6 +169,7 @@ export default defineConfig({
 			remarkDirective,
 			remarkSectionize,
 			parseDirectiveNode,
+			remarkOptimizePublicImages,
 		],
 		rehypePlugins: [
 			rehypeKatex,

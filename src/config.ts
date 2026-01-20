@@ -19,7 +19,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "/img/111024784_p0.png", // Path starting with '/' is relative to the /public directory
+		src: "assets/img/111024784_p0.png", // Relative path for local images in src/assets
 		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
 		credit: {
 			enable: false, // Display the credit text of the banner image
@@ -57,7 +57,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "/img/seia_avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "assets/img/seia_avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
 	name: "Poi",
 	bio: "Darkness cannot drive out darkness, only light can do that. Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.",
 	links: [
@@ -118,19 +118,19 @@ export const friends: Friend[] = [
 	{
 		name: "AcoFork Blog",
 		url: "https://2x.nz/",
-		avatar: "/img/2xnz_headimg_dl.jpg",
+		avatar: "assets/img/2xnz_headimg_dl.jpg",
 		description: "Protect What You Love.",
 	},
 	{
 		name: "Aliya",
 		url: "https://rin.1143520.xyz/",
-		avatar: "/img/rin.1143520.xyz_.avif",
+		avatar: "assets/img/rin.1143520.xyz_.avif",
 		description: "【无所事事】我的乐园。",
 	},
 	{
 		name: "FallingSakura",
 		url: "https://fallingsakura.top/",
-		avatar: "/img/fallingsakura.webp",
+		avatar: "assets/img/fallingsakura.webp",
 		description: "None",
 	},
 	{
@@ -143,7 +143,8 @@ export const friends: Friend[] = [
 	{
 		name: "皓子的小站",
 		url: "https://howiehz.top",
-		avatar: "/img/howiehz_ico-r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4.webp",
+		avatar:
+			"assets/img/howiehz_ico-r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4.webp",
 		description:
 			"互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
 	},
@@ -151,7 +152,7 @@ export const friends: Friend[] = [
 		name: "静观小窗",
 		url: "https://www.vindo.cn/",
 		avatar:
-			"/img/jcblog.com_.cn_.profilephoto-rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4.webp",
+			"assets/img/jcblog.com_.cn_.profilephoto-rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4.webp",
 		description:
 			"Developer，业余平面设计，细节控，Archer，南宋｜五代｜北朝历史爱好者。",
 	},
