@@ -216,6 +216,7 @@ const sortedDevDeps = Object.entries(devDependencies)
 </MainGridLayout>
 
 <style>
+@reference "../styles/tailwind.css";
     table {
         width: 100%;
     }
@@ -231,7 +232,7 @@ const sortedDevDeps = Object.entries(devDependencies)
     /* Anchor styles matching markdown.css */
     h1, h2 {
         .anchor {
-            @apply transition -m-0.5 ml-[0.2ch] p-0.5 select-none opacity-0 relative font-medium text-[var(--primary)] !important;
+            @apply !transition !-m-0.5 !ml-[0.2ch] !p-0.5 !select-none !opacity-0 !relative !font-medium !text-[var(--primary)];
             text-decoration: underline;
             text-decoration-color: var(--link-underline);
             text-decoration-style: dashed;
@@ -242,7 +243,7 @@ const sortedDevDeps = Object.entries(devDependencies)
             -webkit-box-decoration-break: clone;
 
             .anchor-icon {
-                @apply mx-[0.45ch] !important;
+                @apply !mx-[0.45ch];
             }
 
             &:hover, &:active {
@@ -255,7 +256,7 @@ const sortedDevDeps = Object.entries(devDependencies)
 
         &:hover {
             .anchor {
-                @apply opacity-100 !important;
+                @apply !opacity-100;
             }
         }
     }

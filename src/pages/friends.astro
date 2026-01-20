@@ -65,10 +65,11 @@ import { friends } from "../config";
 </MainGridLayout>
 
 <style>
+@reference "../styles/tailwind.css";
     /* Anchor styles matching markdown.css */
     h1 {
         .anchor {
-            @apply transition -m-0.5 ml-[0.2ch] p-0.5 select-none opacity-0 relative font-medium text-[var(--primary)] !important;
+            @apply !transition !-m-0.5 !ml-[0.2ch] !p-0.5 !select-none !opacity-0 !relative !font-medium !text-[var(--primary)];
             text-decoration: underline;
             text-decoration-color: var(--link-underline);
             text-decoration-style: dashed;
@@ -79,7 +80,7 @@ import { friends } from "../config";
             -webkit-box-decoration-break: clone;
 
             .anchor-icon {
-                @apply mx-[0.45ch] !important;
+                @apply !mx-[0.45ch];
             }
 
             &:hover, &:active {
@@ -92,7 +93,7 @@ import { friends } from "../config";
 
         &:hover {
             .anchor {
-                @apply opacity-100 !important;
+                @apply !opacity-100;
             }
         }
     }
