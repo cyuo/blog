@@ -21,7 +21,7 @@
 		"katex": "^0.16.27",
 		"overlayscrollbars": "^2.13.0",
 		"photoswipe": "^5.4.4",
-		"svelte": "^5.47.1"
+		"svelte": "^5.48.0"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.6",
