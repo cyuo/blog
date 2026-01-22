@@ -5,8 +5,6 @@ enum I18nKey {
 	search = "search",
 	friends = "friends",
 
-	privacy = "privacy",
-
 	tags = "tags",
 	categories = "categories",
 	recentPosts = "recentPosts",
