@@ -1,18 +1,7 @@
 <script lang="ts">
-import { onMount } from "svelte";
-
 import I18nKey from "../i18n/i18nKey";
 import { i18n } from "../i18n/translation";
 import { getPostUrlBySlug } from "../utils/url-utils";
-
-export let tags: string[] = [];
-export let categories: string[] = [];
-export let sortedPosts: Post[] = [];
-
-const params = new URLSearchParams(window.location.search);
-tags = params.has("tag") ? params.getAll("tag") : [];
-categories = params.has("category") ? params.getAll("category") : [];
-const uncategorized = params.get("uncategorized");
 
 interface Post {
 	slug: string;
@@ -29,7 +18,24 @@ interface Group {
 	posts: Post[];
 }
 
-let groups: Group[] = [];
+interface Props {
+	tags?: string[];
+	categories?: string[];
+	sortedPosts?: Post[];
+}
+
+let {
+	tags = $bindable([]),
+	categories = $bindable([]),
+	sortedPosts = [],
+}: Props = $props();
+
+const params = new URLSearchParams(window.location.search);
+tags = params.has("tag") ? params.getAll("tag") : [];
+categories = params.has("category") ? params.getAll("category") : [];
+const uncategorized = params.get("uncategorized");
+
+let groups = $state<Group[]>([]);
 
 function formatDate(date: Date) {
 	const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -41,7 +47,7 @@ function formatTag(tagList: string[]) {
 	return tagList.map((t) => `#${t}`).join(" ");
 }
 
-onMount(async () => {
+$effect(() => {
 	let filteredPosts: Post[] = sortedPosts;
 
 	if (tags.length > 0) {

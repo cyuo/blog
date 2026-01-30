@@ -3,7 +3,6 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import Icon from "@iconify/svelte";
 import { url } from "@utils/url-utils.ts";
-import { onMount } from "svelte";
 import type { SearchResult } from "@/global";
 
 let keywordDesktop = $state("");
@@ -84,7 +83,7 @@ const search = async (keyword: string, isDesktop: boolean): Promise<void> => {
 	}
 };
 
-onMount(() => {
+$effect(() => {
 	const initializeSearch = () => {
 		initialized = true;
 		pagefindLoaded =
@@ -98,18 +97,27 @@ onMount(() => {
 	if (import.meta.env.DEV) {
 		initializeSearch();
 	} else {
-		document.addEventListener("pagefindready", () => {
+		const handlePagefindReady = () => {
 			initializeSearch();
-		});
-		document.addEventListener("pagefindloaderror", () => {
+		};
+		const handlePagefindError = () => {
 			initializeSearch();
-		});
+		};
 
-		setTimeout(() => {
+		document.addEventListener("pagefindready", handlePagefindReady);
+		document.addEventListener("pagefindloaderror", handlePagefindError);
+
+		const timeoutId = setTimeout(() => {
 			if (!initialized) {
 				initializeSearch();
 			}
 		}, 2000);
+
+		return () => {
+			document.removeEventListener("pagefindready", handlePagefindReady);
+			document.removeEventListener("pagefindloaderror", handlePagefindError);
+			clearTimeout(timeoutId);
+		};
 	}
 });
 
