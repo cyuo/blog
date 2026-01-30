@@ -1,4 +1,5 @@
 ---
+import { execSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { load } from "js-yaml";
 import I18nKey from "../i18n/i18nKey";
@@ -19,6 +20,29 @@ const isDev = import.meta.env.DEV;
 const mode = import.meta.env.MODE;
 const platform = process.platform;
 const arch = process.arch;
+
+// Get git commit info
+let gitCommitHash = "";
+let gitCommitDate = "";
+try {
+	gitCommitHash = execSync("git rev-parse --short=6 HEAD", {
+		encoding: "utf-8",
+	}).trim();
+	const commitTimestamp = execSync("git log -1 --format=%ci HEAD", {
+		encoding: "utf-8",
+	}).trim();
+	// Format: 2020.01.01 00:00
+	const date = new Date(commitTimestamp);
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, "0");
+	const day = String(date.getDate()).padStart(2, "0");
+	const hours = String(date.getHours()).padStart(2, "0");
+	const minutes = String(date.getMinutes()).padStart(2, "0");
+	gitCommitDate = `${year}.${month}.${day} ${hours}:${minutes}`;
+} catch (error) {
+	// If git is not available or not a git repository, leave empty
+	console.warn("Failed to get git info:", error);
+}
 
 // Define types for pnpm lock file structure
 interface LockFileVersionInfo {
@@ -133,7 +157,12 @@ SOFTWARE.</pre>
                             </tr>
                             <tr class="border-b border-black/10 dark:border-white/15">
                                 <td class="py-2 px-4 font-medium">{i18n(I18nKey.version)}</td>
-                                <td class="py-2 px-4">{packageJson.version}</td>
+                                <td class="py-2 px-4">
+                                    {packageJson.version}
+                                    {gitCommitHash && gitCommitDate && (
+                                        <span class="text-black/60 dark:text-white/60"> ({gitCommitHash} {gitCommitDate})</span>
+                                    )}
+                                </td>
                             </tr>
                             <tr class="border-b border-black/10 dark:border-white/15">
                                 <td class="py-2 px-4 font-medium">{i18n(I18nKey.mode)}</td>
