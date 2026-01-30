@@ -8,10 +8,16 @@ html.is-animating .transition-swup-fade {
     @apply opacity-0
 }
 
+/* Swup fade out animations - exclude navbar and sidebar */
+html.is-animating .onload-animation:not(#navbar):not(#sidebar *):not(#sidebar) {
+    animation: 250ms ease-in fade-out-down;
+    animation-fill-mode: forwards;
+}
+
 /* Fade-in animations for components */
 @keyframes fade-in-up {
     0% {
-        transform: translateY(2rem);
+        transform: translateY(1.5rem);
         opacity: 0;
     }
     100% {
@@ -20,13 +26,47 @@ html.is-animating .transition-swup-fade {
     }
 }
 
+@keyframes fade-in-down {
+    0% {
+        transform: translateY(-1.5rem);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out-down {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(1.5rem);
+        opacity: 0;
+    }
+}
+
+@keyframes fade-out-up {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-1.5rem);
+        opacity: 0;
+    }
+}
+
 /* Main components */
 .onload-animation {
     opacity: 0;
-    animation: 300ms fade-in-up;
+    animation: 250ms ease-out fade-in-up;
     animation-fill-mode: forwards;
 }
 #navbar {
+    animation-name: fade-in-down;
     animation-delay: 0ms
 }
 #sidebar {

@@ -183,11 +183,11 @@ const siteLang = lang.replace("_", "-");
 	}
 	/* Navbar show/hide animation support */
 	#navbar-wrapper {
-		@apply opacity-100 translate-y-0 duration-300 ease-in-out transform-gpu will-change-[transform,opacity];
-		transition-property: transform, opacity;
+		@apply translate-y-0 duration-300 ease-in-out transform-gpu will-change-transform;
+		transition-property: transform;
 	}
 	#navbar-wrapper.navbar-hidden {
-		@apply opacity-0 pointer-events-none;
+		@apply pointer-events-none;
 		transform: translateY(-100%);
 	}
 
