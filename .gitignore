@@ -37,3 +37,4 @@ yarn.lock
 src/content/posts/**
 src/content/spec/**
 src/utils/taxonomy-map.json
+src/config.ts
