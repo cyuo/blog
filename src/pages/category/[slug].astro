@@ -4,6 +4,7 @@ import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
 import { getSortedPostsList } from "../../utils/content-utils";
+import { getCategoryName } from "../../utils/taxonomy";
 import taxonomyMap from "../../utils/taxonomy-map.json";
 
 export async function getStaticPaths() {
@@ -35,8 +36,7 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const { filteredPosts } = Astro.props;
-const categoryName =
-	(taxonomyMap.categories as Record<string, string>)[slug as string] || slug;
+const categoryName = getCategoryName(slug as string);
 ---
 
 <MainGridLayout title={`${i18n(I18nKey.archive)} - ${categoryName}`}>

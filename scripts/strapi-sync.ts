@@ -250,16 +250,30 @@ async function sync() {
 
 		// Build category mapping
 		data.categories.forEach((cat) => {
-			const attrs = cat.attributes || cat;
-			const slug = attrs.slug || attrs.name;
-			taxonomyMap.categories[slug] = attrs.name;
+			const attrs = (cat.attributes || cat) as Record<string, string | undefined>;
+			const slug =
+				attrs.slug || attrs.categorySlug || attrs.name || attrs.categoryName;
+			const name =
+				attrs.name || attrs.categoryName || attrs.slug || attrs.categorySlug;
+
+			if (!slug || !name) {
+				return;
+			}
+
+			taxonomyMap.categories[slug] = name;
 		});
 
 		// Build tag mapping
 		data.tags.forEach((tag) => {
-			const attrs = tag.attributes || tag;
-			const slug = attrs.slug || attrs.name;
-			taxonomyMap.tags[slug] = attrs.name;
+			const attrs = (tag.attributes || tag) as Record<string, string | undefined>;
+			const slug = attrs.slug || attrs.tagSlug || attrs.name || attrs.tagName;
+			const name = attrs.name || attrs.tagName || attrs.slug || attrs.tagSlug;
+
+			if (!slug || !name) {
+				return;
+			}
+
+			taxonomyMap.tags[slug] = name;
 		});
 
 		const taxonomyPath = path.resolve(

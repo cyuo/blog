@@ -1,7 +1,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
-import { getCategoryName } from "@utils/taxonomy";
+import { getCategoryName, getTagName } from "@utils/taxonomy";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
 // // Retrieve posts and sort them by publication date
@@ -48,6 +48,7 @@ export async function getSortedPostsList(): Promise<PostForList[]> {
 	return sortedPostsList;
 }
 export type Tag = {
+	slug: string;
 	name: string;
 	count: number;
 };
@@ -70,7 +71,11 @@ export async function getTagList(): Promise<Tag[]> {
 		return a.toLowerCase().localeCompare(b.toLowerCase());
 	});
 
-	return keys.map((key) => ({ name: key, count: countMap[key] }));
+	return keys.map((key) => ({
+		slug: key,
+		name: getTagName(key),
+		count: countMap[key],
+	}));
 }
 
 export type Category = {

@@ -48,8 +48,30 @@ function formatDate(date: Date) {
 	return `${month}-${day}`;
 }
 
+function getTagDisplayName(slug: string) {
+	const normalizedSlug = (slug || "").trim();
+	if (!normalizedSlug) {
+		return slug;
+	}
+
+	if (taxonomyMap.tags[normalizedSlug]) {
+		return taxonomyMap.tags[normalizedSlug];
+	}
+
+	try {
+		const decodedSlug = decodeURIComponent(normalizedSlug);
+		if (decodedSlug !== normalizedSlug && taxonomyMap.tags[decodedSlug]) {
+			return taxonomyMap.tags[decodedSlug];
+		}
+	} catch {
+		// Keep fallback behavior when slug is not URI-encoded
+	}
+
+	return slug;
+}
+
 function formatTag(tagList: string[]) {
-	return tagList.map((slug) => `#${taxonomyMap.tags[slug] || slug}`).join(" ");
+	return tagList.map((slug) => `#${getTagDisplayName(slug)}`).join(" ");
 }
 
 $effect(() => {

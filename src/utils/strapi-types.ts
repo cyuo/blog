@@ -46,8 +46,30 @@ export interface StrapiPost {
 		draft?: boolean;
 		description?: string;
 		image?: StrapiImage;
-		tags?: Array<{ attributes?: { slug: string; name: string } }>;
-		category?: { attributes?: { slug: string; name: string } };
+		tags?: Array<{
+			attributes?: {
+				slug?: string;
+				name?: string;
+				tagSlug?: string;
+				tagName?: string;
+			};
+			slug?: string;
+			name?: string;
+			tagSlug?: string;
+			tagName?: string;
+		}>;
+		category?: {
+			attributes?: {
+				slug?: string;
+				name?: string;
+				categorySlug?: string;
+				categoryName?: string;
+			};
+			slug?: string;
+			name?: string;
+			categorySlug?: string;
+			categoryName?: string;
+		};
 		lang?: string;
 	};
 	// Direct properties (when attributes are flattened)
@@ -59,29 +81,59 @@ export interface StrapiPost {
 	draft?: boolean;
 	description?: string;
 	image?: StrapiImage;
-	tags?: Array<{ attributes?: { slug: string; name: string } }>;
-	category?: { attributes?: { slug: string; name: string } };
+	tags?: Array<{
+		attributes?: {
+			slug?: string;
+			name?: string;
+			tagSlug?: string;
+			tagName?: string;
+		};
+		slug?: string;
+		name?: string;
+		tagSlug?: string;
+		tagName?: string;
+	}>;
+	category?: {
+		attributes?: {
+			slug?: string;
+			name?: string;
+			categorySlug?: string;
+			categoryName?: string;
+		};
+		slug?: string;
+		name?: string;
+		categorySlug?: string;
+		categoryName?: string;
+	};
 	lang?: string;
 }
 
 export interface StrapiCategory {
 	id: number;
 	attributes?: {
-		name: string;
-		slug: string;
+		name?: string;
+		slug?: string;
+		categoryName?: string;
+		categorySlug?: string;
 	};
 	name?: string;
 	slug?: string;
+	categoryName?: string;
+	categorySlug?: string;
 }
 
 export interface StrapiTag {
 	id: number;
 	attributes?: {
-		name: string;
-		slug: string;
+		name?: string;
+		slug?: string;
+		tagName?: string;
+		tagSlug?: string;
 	};
 	name?: string;
 	slug?: string;
+	tagName?: string;
+	tagSlug?: string;
 }
 
 export interface StrapiFriend {

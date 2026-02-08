@@ -10,14 +10,28 @@ interface PostData {
 	description?: string;
 	image?: { url?: string } | string;
 	tags?: Array<{
-		attributes?: { slug?: string; name?: string };
+		attributes?: {
+			slug?: string;
+			name?: string;
+			tagSlug?: string;
+			tagName?: string;
+		};
 		slug?: string;
 		name?: string;
+		tagSlug?: string;
+		tagName?: string;
 	}>;
 	category?: {
-		attributes?: { slug?: string; name?: string };
+		attributes?: {
+			slug?: string;
+			name?: string;
+			categorySlug?: string;
+			categoryName?: string;
+		};
 		slug?: string;
 		name?: string;
+		categorySlug?: string;
+		categoryName?: string;
 	};
 	lang?: string;
 }
@@ -116,14 +130,21 @@ export class MarkdownGenerator {
 			// Only save tag slugs
 			frontmatter.tags = post.tags.map((tag) => {
 				const tagData = tag.attributes || tag;
-				return tagData.slug || tagData.name || "";
+				return (
+					tagData.slug || tagData.tagSlug || tagData.name || tagData.tagName || ""
+				);
 			});
 		}
 
 		if (post.category) {
 			// Only save category slug
 			const catData = post.category.attributes || post.category;
-			frontmatter.category = catData.slug || catData.name || "";
+			frontmatter.category =
+				catData.slug ||
+				catData.categorySlug ||
+				catData.name ||
+				catData.categoryName ||
+				"";
 		}
 
 		if (post.lang) {
