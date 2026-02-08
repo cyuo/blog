@@ -33,7 +33,7 @@ export const siteConfig: SiteConfig = {
 	favicon: [
 		{
 			src: "https://i.zrn.net/pic/favicon_abf477e56d.ico",
-		}
+		},
 	],
 };
 
@@ -63,7 +63,7 @@ export const navBarConfig: NavBarConfig = {
 			name: "开往",
 			url: "https://www.travellings.cn/go.html",
 			external: true,
-		}
+		},
 	],
 };
 
@@ -71,9 +71,7 @@ export const profileConfig: ProfileConfig = {
 	avatar: "https://i.zrn.net/pic/seia_avatar_15278c5941.webp",
 	name: "Poi",
 	bio: "Darkness cannot drive out darkness, only light can do that. Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.",
-	links: [
-
-	],
+	links: [],
 };
 
 export const licenseConfig: LicenseConfig = {
@@ -104,7 +102,8 @@ export const friends: Friend[] = [
 		name: "孤傲导航 – Guao Navs",
 		url: "https://guao.de/",
 		avatar: "",
-		description: "孤傲个人拥有，孤傲导航，乐此书签，简洁导航，云链接，个人导航，个人书签，扩展，多用户",
+		description:
+			"孤傲个人拥有，孤傲导航，乐此书签，简洁导航，云链接，个人导航，个人书签，扩展，多用户",
 	},
 	{
 		name: "AcoFork Blog",
@@ -127,13 +126,17 @@ export const friends: Friend[] = [
 	{
 		name: "皓子的小站",
 		url: "https://howiehz.top",
-		avatar: "https://i.zrn.net/pic/howiehz_ico_r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4_56abf3536d.webp",
-		description: "互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
+		avatar:
+			"https://i.zrn.net/pic/howiehz_ico_r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4_56abf3536d.webp",
+		description:
+			"互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
 	},
 	{
 		name: "静观小窗",
 		url: "https://www.vindo.cn/",
-		avatar: "https://i.zrn.net/pic/jcblog_com_cn_profilephoto_rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4_b61e4c0e28.webp",
-		description: "Developer，业余平面设计，细节控，Archer，南宋｜五代｜北朝历史爱好者。",
-	}
+		avatar:
+			"https://i.zrn.net/pic/jcblog_com_cn_profilephoto_rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4_b61e4c0e28.webp",
+		description:
+			"Developer，业余平面设计，细节控，Archer，南宋｜五代｜北朝历史爱好者。",
+	},
 ];

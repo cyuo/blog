@@ -79,7 +79,7 @@ export class ConfigUpdater {
 		const beianAttrs = beian.attributes || beian;
 		const licenseAttrs = licenseConfig.attributes || licenseConfig;
 
-	return `import type {
+		return `import type {
 	BeianConfig,
 	ExpressiveCodeConfig,
 	Friend,
