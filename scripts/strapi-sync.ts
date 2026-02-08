@@ -34,11 +34,12 @@ function validateConfig() {
   const missing = required.filter(key => !process.env[key]);
 
   if (missing.length > 0) {
-    console.error(chalk.red('❌ Missing required environment variables:'));
-    missing.forEach(key => console.error(chalk.red(`   - ${key}`)));
-    console.error(chalk.yellow('\n💡 Please create a .env file based on .env.example'));
-    process.exit(1);
+    console.log(chalk.yellow('⚠️  Missing Strapi environment variables, switching to testcase data.'));
+    missing.forEach(key => console.log(chalk.yellow(`   - ${key}`)));
+    return false;
   }
+
+  return true;
 }
 
 /**
@@ -70,6 +71,45 @@ function syncAboutPage(aboutDir, aboutData) {
   fs.writeFileSync(aboutPath, content, 'utf-8');
 }
 
+function copyTestcaseData() {
+  const rootDir = path.resolve(path.dirname(__dirname));
+  const testcaseDir = path.join(rootDir, 'testcase');
+  const testcasePostsDir = path.join(testcaseDir, 'posts');
+  const testcaseSpecDir = path.join(testcaseDir, 'spec');
+  const testcaseConfigPath = path.join(testcaseDir, 'config.ts');
+
+  if (!fs.existsSync(testcaseDir)) {
+    throw new Error('Missing testcase directory');
+  }
+  if (!fs.existsSync(testcasePostsDir)) {
+    throw new Error('Missing testcase/posts directory');
+  }
+  if (!fs.existsSync(testcaseSpecDir)) {
+    throw new Error('Missing testcase/spec directory');
+  }
+  if (!fs.existsSync(testcaseConfigPath)) {
+    throw new Error('Missing testcase/config.ts');
+  }
+
+  const targetPostsDir = path.join(rootDir, 'src/content/posts');
+  const targetSpecDir = path.join(rootDir, 'src/content/spec');
+  const targetConfigPath = path.join(rootDir, 'src/config/index.ts');
+
+  fs.rmSync(targetPostsDir, { recursive: true, force: true });
+  fs.rmSync(targetSpecDir, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(targetConfigPath), { recursive: true });
+
+  fs.cpSync(testcasePostsDir, targetPostsDir, { recursive: true });
+  fs.cpSync(testcaseSpecDir, targetSpecDir, { recursive: true });
+
+  const testcaseConfig = fs.readFileSync(testcaseConfigPath, 'utf-8');
+  const normalizedConfig = testcaseConfig.replace(
+    'from "./types/config"',
+    'from "../types/config"',
+  );
+  fs.writeFileSync(targetConfigPath, normalizedConfig, 'utf-8');
+}
+
 /**
  * Main sync function
  */
@@ -80,7 +120,19 @@ async function sync() {
   console.log(chalk.cyan.bold('\n🚀 Strapi Sync Started\n'));
 
   // Validate configuration
-  validateConfig();
+  const canSync = validateConfig();
+  if (!canSync) {
+    const fallbackSpinner = ora('Using testcase data...').start();
+    try {
+      copyTestcaseData();
+      fallbackSpinner.succeed(chalk.green('✓ Testcase data synced'));
+    } catch (error) {
+      fallbackSpinner.fail(chalk.red('✗ Failed to sync testcase data'));
+      console.error(chalk.red(`   Error: ${error.message}`));
+      process.exit(1);
+    }
+    return;
+  }
 
   // Initialize components
   const strapiClient = new StrapiClient({
@@ -174,7 +226,7 @@ async function sync() {
   // Update config
   console.log(chalk.cyan('\n⚙️  Updating Configuration:\n'));
 
-  const configSpinner = ora('Updating config.ts...').start();
+  const configSpinner = ora('Updating config/index.ts...').start();
 
   try {
     await configUpdater.update(data);

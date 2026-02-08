@@ -10,6 +10,17 @@ html.is-animating .transition-swup-fade {
     pointer-events: none;
 }
 
+/* Disable banner transition when source and destination banner are identical */
+html.disable-banner-transition #banner.transition-swup-fade {
+    transition: none !important;
+    transform: none !important;
+}
+html.is-animating.disable-banner-transition #banner.transition-swup-fade {
+    opacity: 1 !important;
+    translate: 0 0 !important;
+    pointer-events: auto !important;
+}
+
 /* Swup fade out animations - exclude navbar, sidebar, and banner-credit */
 html.is-animating .onload-animation:not(#navbar):not(#sidebar *):not(#sidebar):not(#banner-credit) {
     animation: 250ms ease-in fade-out-down;

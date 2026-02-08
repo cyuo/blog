@@ -47,7 +47,10 @@ export class ConfigUpdater {
 	constructor(configPath?: string) {
 		this.configPath =
 			configPath ||
-			path.resolve(path.dirname(path.dirname(__dirname)), "src/config.ts");
+			path.resolve(
+				path.dirname(path.dirname(__dirname)),
+				"src/config/index.ts",
+			);
 	}
 
 	escape(str: string): string {
@@ -59,6 +62,7 @@ export class ConfigUpdater {
 	}
 
 	async update(strapiData: StrapiFetchAllResult): Promise<void> {
+		fs.mkdirSync(path.dirname(this.configPath), { recursive: true });
 		const config = this.generateConfig(strapiData);
 		fs.writeFileSync(this.configPath, config, "utf-8");
 	}
@@ -86,7 +90,7 @@ export class ConfigUpdater {
 	NavBarConfig,
 	ProfileConfig,
 	SiteConfig,
-} from "./types/config";
+} from "../types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "${this.escape(siteAttrs.title || "Fuwari")}",

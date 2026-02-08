@@ -6,7 +6,7 @@ import type {
 	NavBarConfig,
 	ProfileConfig,
 	SiteConfig,
-} from "./types/config";
+} from "../types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "Zirkeln",

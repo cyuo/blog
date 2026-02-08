@@ -6,7 +6,7 @@ import "@fontsource/ubuntu/700.css";
 import "@/styles/tailwind.css";
 
 import ConfigCarrier from "@components/ConfigCarrier.astro";
-import { profileConfig, siteConfig } from "@/config";
+import { profileConfig, siteConfig } from "@/config/index";
 import {
 	AUTO_MODE,
 	BANNER_HEIGHT,
@@ -277,7 +277,7 @@ import {
 	BANNER_HEIGHT_EXTEND,
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT
 } from "../constants/constants";
-import { siteConfig } from '../config';
+import { siteConfig } from '../config/index';
 
 /* Preload fonts */
 // (async function() {
@@ -324,6 +324,41 @@ function disableAnimation() {
 */
 
 const bannerEnabled = !!document.getElementById('banner-wrapper')
+let pendingDisableBanner = false;
+let previousBannerSrc = '';
+let skipBannerEffectForVisit = false;
+const bannerSrcByPath = new Map<string, string>();
+
+function normalizePath(input: string): string {
+	try {
+		return new URL(input, window.location.origin).pathname;
+	} catch {
+		return input;
+	}
+}
+
+function normalizeBannerSrc(src: string): string {
+	if (!src) return '';
+	try {
+		return new URL(src, window.location.href).toString();
+	} catch {
+		return src;
+	}
+}
+
+function getCurrentBannerSrc(): string {
+	const bannerImage = document.querySelector('#banner img') as HTMLImageElement | null;
+	if (!bannerImage) return '';
+	return normalizeBannerSrc(bannerImage.getAttribute('src') || bannerImage.src || '');
+}
+
+function cacheCurrentBannerSrc() {
+	const currentPath = normalizePath(window.location.href);
+	const currentBannerSrc = getCurrentBannerSrc();
+	if (currentBannerSrc) {
+		bannerSrcByPath.set(currentPath, currentBannerSrc);
+	}
+}
 
 function setClickOutsideToClose(panel: string, ignores: string[]) {
 	document.addEventListener("click", event => {
@@ -418,7 +453,7 @@ function initCustomScrollbar() {
 	});
 }
 
-function showBanner() {
+function showBanner(skipEffect: boolean = false) {
 	if (!siteConfig.banner.enable) return;
 
 	const banner = document.getElementById('banner');
@@ -426,7 +461,17 @@ function showBanner() {
 		return;
 	}
 
-	// Remove the opacity-0 and scale-105 to show the banner on initial load
+	if (skipEffect) {
+		// Keep same-banner navigation visually stable (no reveal animation).
+		banner.style.transition = 'none';
+		banner.classList.remove('opacity-0', 'scale-105');
+		requestAnimationFrame(() => {
+			banner.style.removeProperty('transition');
+		});
+		return;
+	}
+
+	// Remove the opacity-0 and scale-105 to show the banner
 	banner.classList.remove('opacity-0', 'scale-105');
 }
 
@@ -436,6 +481,7 @@ function init() {
 	loadHue();
 	initCustomScrollbar();
 	showBanner();
+	cacheCurrentBannerSrc();
 }
 
 /* Load settings when entering the site */
@@ -458,15 +504,37 @@ const setup = () => {
 	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
+		if (!bodyElement) return;
 		const isToHome = pathsEqual(visit.to.url, url('/'));
 		const isToPost = visit.to.url.includes('/posts/');
 		const shouldShowBanner = isToHome || isToPost;
+		const hadBanner = bodyElement.classList.contains('enable-banner');
+		const targetPath = normalizePath(visit.to.url);
+		const currentBannerSrc = getCurrentBannerSrc();
+		const cachedTargetBannerSrc = bannerSrcByPath.get(targetPath) || '';
+
+		previousBannerSrc = currentBannerSrc;
+		skipBannerEffectForVisit = !!(
+			shouldShowBanner &&
+			currentBannerSrc &&
+			cachedTargetBannerSrc &&
+			currentBannerSrc === cachedTargetBannerSrc
+		);
+		document.documentElement.classList.toggle(
+			'disable-banner-transition',
+			skipBannerEffectForVisit,
+		);
 
 		// keep enable-banner in sync for subsequent scroll threshold calc
 		if (shouldShowBanner) {
-			bodyElement!.classList.add('enable-banner');
+			bodyElement.classList.add('enable-banner');
+			pendingDisableBanner = false;
+		} else if (hadBanner) {
+			// Delay class removal so banner can fade out with swup animation.
+			pendingDisableBanner = true;
 		} else {
-			bodyElement!.classList.remove('enable-banner');
+			bodyElement.classList.remove('enable-banner');
+			pendingDisableBanner = false;
 		}
 
 		// Move main-content-wrapper immediately so平移与滚动同步
@@ -492,6 +560,27 @@ const setup = () => {
 	window.swup.hooks.on('content:replace', async () => {
 		initCustomScrollbar();
 
+		// Apply delayed hide after content replacement to preserve fade-out.
+		if (pendingDisableBanner) {
+			const bodyElement = document.querySelector('body');
+			bodyElement?.classList.remove('enable-banner');
+			pendingDisableBanner = false;
+		}
+
+		// Fallback compare for first-time visits (not yet in cache).
+		if (!skipBannerEffectForVisit) {
+			const nextBannerSrc = getCurrentBannerSrc();
+			skipBannerEffectForVisit = !!(
+				previousBannerSrc &&
+				nextBannerSrc &&
+				previousBannerSrc === nextBannerSrc
+			);
+			document.documentElement.classList.toggle(
+				'disable-banner-transition',
+				skipBannerEffectForVisit,
+			);
+		}
+
 		// Keep main-grid/before-grid structural updates inside the out->in transition window.
 		scheduleAdjustMainGrid(0);
 		requestAnimationFrame(() => {
@@ -501,7 +590,8 @@ const setup = () => {
 		});
 	})
 	window.swup.hooks.on('page:view', () => {
-		showBanner();
+		showBanner(skipBannerEffectForVisit);
+		cacheCurrentBannerSrc();
 	});
 	window.swup.hooks.on('visit:end', (_visit: {to: {url: string}}) => {
 		setTimeout(() => {
@@ -514,6 +604,9 @@ const setup = () => {
 			directionChangeY = lastScrollY;
 			scrollFunction();
         }, 200)
+		document.documentElement.classList.remove('disable-banner-transition');
+		previousBannerSrc = '';
+		skipBannerEffectForVisit = false;
 	});
 }
 if (window?.swup?.hooks) {
