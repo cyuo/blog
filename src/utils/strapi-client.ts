@@ -13,7 +13,7 @@ import type {
 	StrapiResponse,
 	StrapiSiteConfig,
 	StrapiTag,
-} from "./strapi-types";
+} from "../types/strapi.ts";
 
 /**
  * Strapi API Client

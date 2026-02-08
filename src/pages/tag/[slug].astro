@@ -9,20 +9,24 @@ import taxonomyMap from "../../utils/taxonomy-map.json";
 
 export async function getStaticPaths() {
 	const sortedPostsList = await getSortedPostsList();
+	type SortedPost = Awaited<ReturnType<typeof getSortedPostsList>>[number];
 
 	// Get all unique tag slugs
-	const tagMap = new Map();
+	const tagMap = new Map<string, { slug: string; posts: SortedPost[] }>();
 	sortedPostsList.forEach((post) => {
 		const tags = post.data.tags || [];
 
-		tags.forEach((tagSlug) => {
+		tags.forEach((tagSlug: string) => {
 			if (!tagMap.has(tagSlug)) {
 				tagMap.set(tagSlug, {
 					slug: tagSlug,
 					posts: [],
 				});
 			}
-			tagMap.get(tagSlug).posts.push(post);
+			const tagItem = tagMap.get(tagSlug);
+			if (tagItem) {
+				tagItem.posts.push(post);
+			}
 		});
 	});
 

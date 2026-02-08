@@ -38,4 +38,3 @@ src/content/posts/**
 src/content/spec/**
 src/config.ts
 src/utils/taxonomy-map.json
-

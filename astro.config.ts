@@ -26,6 +26,7 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.ts";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.ts";
 import { remarkOptimizePublicImages } from "./src/plugins/remark-optimize-public-images.ts";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.ts";
+import { prebuildIntegration } from "./src/integration/prebuild.ts";
 
 interface RollupWarning {
 	message: string;
@@ -47,6 +48,7 @@ export default defineConfig({
 		},
 	},
 	integrations: [
+		prebuildIntegration(),
 		swup({
 			theme: false,
 			animationClass: "transition-swup-",
