@@ -1,4 +1,4 @@
-import { siteConfig } from "../config/index";
+import { siteConfig } from "../config";
 import type I18nKey from "./i18nKey";
 import { zh_CN } from "./languages/zh_CN";
 

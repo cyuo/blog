@@ -7,7 +7,7 @@ import type { MarkdownHeading } from "astro";
 import { Icon } from "astro-icon/components";
 import ImageWrapper from "../components/misc/ImageWrapper.astro";
 import TOC from "../components/widget/TOC.astro";
-import { siteConfig } from "../config/index";
+import { siteConfig } from "../config";
 import { MAIN_PANEL_OVERLAPS_BANNER_HEIGHT } from "../constants/constants";
 import { pathsEqual, url } from "../utils/url-utils";
 import Layout from "./Layout.astro";
@@ -182,3 +182,4 @@ if (window.swup) {
 }
 </script>
 </Layout>
+

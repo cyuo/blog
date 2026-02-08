@@ -34,7 +34,8 @@ yarn.lock
 .claude
 
 # content
-src/content/posts/*
-src/content/spec/*
+src/content/posts/**
+src/content/spec/**
 src/config.ts
+src/utils/taxonomy-map.json
 

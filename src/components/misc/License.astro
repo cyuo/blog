@@ -1,6 +1,6 @@
 ---
 import { Icon } from "astro-icon/components";
-import { licenseConfig, profileConfig } from "../../config/index";
+import { licenseConfig, profileConfig } from "../../config";
 import I18nKey from "../../i18n/i18nKey";
 import { i18n } from "../../i18n/translation";
 import { formatDateToYYYYMMDD } from "../../utils/date-utils";
@@ -41,3 +41,4 @@ const postUrl = decodeURIComponent(Astro.url.toString());
     </div>
     <Icon name="fa6-brands:creative-commons" class="transition text-[15rem] absolute pointer-events-none right-6 top-1/2 -translate-y-1/2 text-black/5 dark:text-white/5"></Icon>
 </div>
+
