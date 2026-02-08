@@ -1,11 +1,12 @@
 /* Page transition animations with Swup */
 html.is-changing .transition-swup-fade {
-    @apply transition-opacity duration-300;
-    will-change: opacity;
+    @apply transition-all duration-200;
+    will-change: opacity, transform;
     transform: translateZ(0);
 }
 html.is-animating .transition-swup-fade {
     @apply opacity-0;
+    translate: 0 1rem;
     pointer-events: none;
 }
 
@@ -77,6 +78,9 @@ html.is-animating .onload-animation:not(#navbar):not(#sidebar *):not(#sidebar):n
     outline: none;
 }
 #content-wrapper {
+    animation-delay: var(--content-delay);
+}
+#post-metadata-container .onload-animation {
     animation-delay: var(--content-delay);
 }
 .footer {

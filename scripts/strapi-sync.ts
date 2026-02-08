@@ -56,6 +56,21 @@ function clearPostsDirectory(postsDir) {
 }
 
 /**
+ * Sync about page content to Astro content collection
+ */
+function syncAboutPage(aboutDir, aboutData) {
+  if (!fs.existsSync(aboutDir)) {
+    fs.mkdirSync(aboutDir, { recursive: true });
+  }
+
+  const attrs = aboutData?.attributes || aboutData || {};
+  const content = typeof attrs.content === 'string' ? attrs.content : '';
+  const aboutPath = path.join(aboutDir, 'about.md');
+
+  fs.writeFileSync(aboutPath, content, 'utf-8');
+}
+
+/**
  * Main sync function
  */
 async function sync() {
@@ -142,6 +157,18 @@ async function sync() {
   console.log(chalk.green(`   ✓ Processed: ${processedCount}`));
   if (errorCount > 0) {
     console.log(chalk.red(`   ✗ Errors: ${errorCount}`));
+  }
+
+  // Sync about page
+  console.log(chalk.cyan('\n📄 Syncing About Page:\n'));
+  const aboutSpinner = ora('Writing src/content/spec/about.md...').start();
+  try {
+    const aboutDir = path.resolve(path.dirname(__dirname), 'src/content/spec');
+    syncAboutPage(aboutDir, data.about);
+    aboutSpinner.succeed(chalk.green('✓ About page synced'));
+  } catch (error) {
+    aboutSpinner.fail(chalk.red('✗ Failed to sync about page'));
+    console.error(chalk.red(`   Error: ${error.message}`));
   }
 
   // Update config

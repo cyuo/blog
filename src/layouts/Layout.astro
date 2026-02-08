@@ -492,7 +492,8 @@ const setup = () => {
 	window.swup.hooks.on('content:replace', async () => {
 		initCustomScrollbar();
 
-		scheduleAdjustMainGrid(50);
+		// Keep main-grid/before-grid structural updates inside the out->in transition window.
+		scheduleAdjustMainGrid(0);
 		requestAnimationFrame(() => {
 			lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
 			directionChangeY = lastScrollY;
@@ -509,7 +510,6 @@ const setup = () => {
                 toc.classList.remove('toc-not-ready')
             }
 
-            scheduleAdjustMainGrid(100);
 			lastScrollY = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
 			directionChangeY = lastScrollY;
 			scrollFunction();
@@ -597,6 +597,7 @@ window.onresize = () => {
 
 // Handle main-grid position when before-grid is empty
 let adjustGridTimeout: number | null = null;
+const MAIN_GRID_TRANSITION_MS = 200;
 function adjustMainGridPosition() {
 	const metadataContainer = document.getElementById('post-metadata-container');
 	const mainGrid = document.getElementById('main-grid');
@@ -604,7 +605,7 @@ function adjustMainGridPosition() {
 	if (!metadataContainer || !mainGrid) return;
 
 	// Add transition for smooth animation
-	mainGrid.style.transition = 'transform 0.3s ease-out';
+	mainGrid.style.transition = `transform ${MAIN_GRID_TRANSITION_MS}ms ease`;
 
 	// Check if the inner div has actual content
 	const innerDiv = metadataContainer.querySelector(':scope > div');
