@@ -1,5 +1,5 @@
 import sitemap from "@astrojs/sitemap";
-import svelte from "@astrojs/svelte";
+import svelte, { vitePreprocess } from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
 import { pluginCollapsibleSections } from "@expressive-code/plugin-collapsible-sections";
 import { pluginLineNumbers } from "@expressive-code/plugin-line-numbers";
@@ -8,6 +8,7 @@ import { defineConfig } from "astro/config";
 import compress from "astro-compress";
 import expressiveCode from "astro-expressive-code";
 import icon from "astro-icon";
+import type { ElementContent, Properties } from "hast";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -17,14 +18,20 @@ import remarkGithubAdmonitionsToDirectives from "remark-github-admonitions-to-di
 import remarkMath from "remark-math";
 import remarkSectionize from "remark-sectionize";
 import { expressiveCodeConfig } from "./src/config/index.ts";
-import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.js";
+import { pluginCustomCopyButton } from "./src/plugins/expressive-code/custom-copy-button.ts";
 import { pluginLanguageBadge } from "./src/plugins/expressive-code/language-badge.ts";
-import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.mjs";
-import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
-import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
-import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
-import { remarkOptimizePublicImages } from "./src/plugins/remark-optimize-public-images.mjs";
-import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
+import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.ts";
+import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.ts";
+import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.ts";
+import { remarkExcerpt } from "./src/plugins/remark-excerpt.ts";
+import { remarkOptimizePublicImages } from "./src/plugins/remark-optimize-public-images.ts";
+import { remarkReadingTime } from "./src/plugins/remark-reading-time.ts";
+
+interface RollupWarning {
+	message: string;
+}
+
+type RollupWarnHandler = (warning: RollupWarning) => void;
 
 // https://astro.build/config
 export default defineConfig({
@@ -111,7 +118,10 @@ export default defineConfig({
 				showCopyToClipboardButton: false,
 			},
 		}),
-		svelte(),
+		svelte({
+			configFile: false,
+			preprocess: [vitePreprocess({ script: true })],
+		}),
 		sitemap(),
 		// 使用 astro-compress 进行全面压缩（HTML/CSS/JS/SVG/图片）
 		compress({
@@ -176,11 +186,16 @@ export default defineConfig({
 				{
 					components: {
 						github: GithubCardComponent,
-						note: (x, y) => AdmonitionComponent(x, y, "note"),
-						tip: (x, y) => AdmonitionComponent(x, y, "tip"),
-						important: (x, y) => AdmonitionComponent(x, y, "important"),
-						caution: (x, y) => AdmonitionComponent(x, y, "caution"),
-						warning: (x, y) => AdmonitionComponent(x, y, "warning"),
+						note: (properties: Properties, children: ElementContent[]) =>
+							AdmonitionComponent(properties, children, "note"),
+						tip: (properties: Properties, children: ElementContent[]) =>
+							AdmonitionComponent(properties, children, "tip"),
+						important: (properties: Properties, children: ElementContent[]) =>
+							AdmonitionComponent(properties, children, "important"),
+						caution: (properties: Properties, children: ElementContent[]) =>
+							AdmonitionComponent(properties, children, "caution"),
+						warning: (properties: Properties, children: ElementContent[]) =>
+							AdmonitionComponent(properties, children, "warning"),
 					},
 				},
 			],
@@ -235,7 +250,7 @@ export default defineConfig({
 				},
 			},
 			rollupOptions: {
-				onwarn(warning, warn) {
+				onwarn(warning: RollupWarning, warn: RollupWarnHandler) {
 					// temporarily suppress this warning
 					if (
 						warning.message.includes("is dynamically imported by") &&
