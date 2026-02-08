@@ -7,23 +7,48 @@ import { getSortedPostsList } from "../../utils/content-utils";
 import { getCategoryName } from "../../utils/taxonomy";
 import taxonomyMap from "../../utils/taxonomy-map.json";
 
+const UNCATEGORIZED_SLUG = "uncategorized";
+
 export async function getStaticPaths() {
 	const sortedPostsList = await getSortedPostsList();
 
 	// Get all unique category slugs
-	const categoryMap = new Map();
+	const categoryMap = new Map<
+		string,
+		{ slug: string; posts: typeof sortedPostsList }
+	>();
 	sortedPostsList.forEach((post) => {
 		const categorySlug = post.data.category;
 		if (categorySlug) {
-			if (!categoryMap.has(categorySlug)) {
+			const existingCategory = categoryMap.get(categorySlug);
+			if (!existingCategory) {
 				categoryMap.set(categorySlug, {
 					slug: categorySlug,
-					posts: [],
+					posts: [post],
 				});
+			} else {
+				existingCategory.posts.push(post);
 			}
-			categoryMap.get(categorySlug).posts.push(post);
 		}
 	});
+
+	const uncategorizedPosts = sortedPostsList.filter(
+		(post) =>
+			!post.data.category ||
+			(typeof post.data.category === "string" &&
+				post.data.category.trim() === ""),
+	);
+	if (uncategorizedPosts.length > 0) {
+		const uncategorizedCategory = categoryMap.get(UNCATEGORIZED_SLUG);
+		if (uncategorizedCategory) {
+			uncategorizedCategory.posts.push(...uncategorizedPosts);
+		} else {
+			categoryMap.set(UNCATEGORIZED_SLUG, {
+				slug: UNCATEGORIZED_SLUG,
+				posts: uncategorizedPosts,
+			});
+		}
+	}
 
 	return Array.from(categoryMap.values()).map((category) => ({
 		params: { slug: category.slug },
@@ -36,9 +61,17 @@ export async function getStaticPaths() {
 
 const { slug } = Astro.params;
 const { filteredPosts } = Astro.props;
-const categoryName = getCategoryName(slug as string);
+const isUncategorized = (slug as string) === UNCATEGORIZED_SLUG;
+const categoryName = isUncategorized
+	? i18n(I18nKey.uncategorized)
+	: getCategoryName(slug as string);
 ---
 
 <MainGridLayout title={`${i18n(I18nKey.archive)} - ${categoryName}`}>
-    <ArchivePanel sortedPosts={filteredPosts} categories={[slug]} taxonomyMap={taxonomyMap} client:only="svelte"></ArchivePanel>
+    <ArchivePanel
+            sortedPosts={filteredPosts}
+            categories={isUncategorized ? [] : [slug as string]}
+            taxonomyMap={taxonomyMap}
+            client:only="svelte"
+    ></ArchivePanel>
 </MainGridLayout>

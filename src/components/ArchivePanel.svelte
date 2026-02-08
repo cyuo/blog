@@ -29,16 +29,11 @@ interface Props {
 }
 
 let {
-	tags = $bindable([]),
-	categories = $bindable([]),
+	tags = [],
+	categories = [],
 	sortedPosts = [],
 	taxonomyMap = { categories: {}, tags: {} },
 }: Props = $props();
-
-const params = new URLSearchParams(window.location.search);
-tags = params.has("tag") ? params.getAll("tag") : [];
-categories = params.has("category") ? params.getAll("category") : [];
-const uncategorized = params.get("uncategorized");
 
 let groups = $state<Group[]>([]);
 
@@ -89,10 +84,6 @@ $effect(() => {
 		filteredPosts = filteredPosts.filter(
 			(post) => post.data.category && categories.includes(post.data.category),
 		);
-	}
-
-	if (uncategorized) {
-		filteredPosts = filteredPosts.filter((post) => !post.data.category);
 	}
 
 	const grouped = filteredPosts.reduce(

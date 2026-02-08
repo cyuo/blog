@@ -131,7 +131,11 @@ export class MarkdownGenerator {
 			frontmatter.tags = post.tags.map((tag) => {
 				const tagData = tag.attributes || tag;
 				return (
-					tagData.slug || tagData.tagSlug || tagData.name || tagData.tagName || ""
+					tagData.slug ||
+					tagData.tagSlug ||
+					tagData.name ||
+					tagData.tagName ||
+					""
 				);
 			});
 		}
