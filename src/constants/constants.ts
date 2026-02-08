@@ -3,7 +3,7 @@ export const PAGE_SIZE = 8;
 export const LIGHT_MODE = "light";
 export const DARK_MODE = "dark";
 export const AUTO_MODE = "auto";
-export const DEFAULT_THEME: typeof AUTO_MODE = AUTO_MODE;
+export const DEFAULT_THEME: string = AUTO_MODE;
 
 // Banner height unit: vh
 export const BANNER_HEIGHT = 70; // Mobile/tablet: doubled from original 35vh

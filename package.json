@@ -3,17 +3,17 @@
 	"type": "module",
 	"version": "0.1.0",
 	"scripts": {
-		"dev": "astro dev",
-		"start": "astro dev",
+		"dev": "tsx scripts/bootstrap.ts && astro dev",
 		"check": "astro check",
-		"build": "astro build && pagefind --site dist",
+		"build": "tsx scripts/bootstrap.ts && astro build && pagefind --site dist",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
 		"format": "biome format --write ./src",
 		"lint": "biome check --write ./src",
 		"preinstall": "npx only-allow pnpm",
-		"pull": "tsx src/integration/prebuild.ts"
+		"bootstrap": "tsx scripts/bootstrap.ts",
+		"pull": "tsx scripts/bootstrap.ts && tsx src/integration/prebuild.ts"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.6",

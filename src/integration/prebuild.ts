@@ -7,7 +7,7 @@ import {
 	resolveMode,
 } from "../utils/version-markdown.ts";
 
-const COMMANDS_REQUIRING_SYNC = new Set(["dev", "build", "pull"]);
+const COMMANDS_REQUIRING_SYNC = new Set(["dev", "build"]);
 
 interface PrebuildLogger {
 	info: (message: string) => void;
@@ -29,10 +29,10 @@ function parseCliCommand(argv: string[] = process.argv.slice(2)): string {
 			return arg.slice("--command=".length);
 		}
 		if (arg === "--command") {
-			return argv[i + 1] || "pull";
+			return argv[i + 1] || "dev";
 		}
 	}
-	return "pull";
+	return "dev";
 }
 
 export async function runPrebuild(

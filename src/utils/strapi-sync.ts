@@ -15,7 +15,6 @@ import type {
 	StrapiPost,
 	StrapiTag,
 } from "../types/strapi.ts";
-import { ConfigUpdater } from "./config-updater.ts";
 import { MarkdownGenerator } from "./markdown-generator.ts";
 import { StrapiClient } from "./strapi-client.ts";
 import { generateVersionMarkdown, resolveMode } from "./version-markdown.ts";
@@ -331,8 +330,6 @@ async function syncContent(options: SyncOptions): Promise<void> {
 		token: strapiToken,
 	});
 	const markdownGenerator = new MarkdownGenerator();
-	const configUpdater = new ConfigUpdater();
-
 	const fetchSpinner = ora("Fetching data from Strapi...").start();
 	let data: StrapiFetchAllResult;
 	try {
@@ -416,16 +413,6 @@ async function syncContent(options: SyncOptions): Promise<void> {
 		friendsSpinner.succeed(chalk.green("✓ Friends page markdown synced"));
 	} catch (error) {
 		friendsSpinner.fail(chalk.red("✗ Failed to sync friends page markdown"));
-		console.error(chalk.red(`   Error: ${toErrorMessage(error)}`));
-	}
-
-	console.log(chalk.cyan("\n⚙️  Updating Configuration:\n"));
-	const configSpinner = ora("Updating config.ts...").start();
-	try {
-		await configUpdater.update(data);
-		configSpinner.succeed(chalk.green("✓ Configuration updated"));
-	} catch (error) {
-		configSpinner.fail(chalk.red("✗ Failed to update configuration"));
 		console.error(chalk.red(`   Error: ${toErrorMessage(error)}`));
 	}
 
