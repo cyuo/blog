@@ -1,12 +1,10 @@
 ---
-title: XCPC 2024 赛年总结
+title: "XCPC 2024 赛年总结"
 published: 2025-08-18
-description: ''
-image: ''
-tags: [xcpc]
-category: '算法竞赛'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "xcpc"
+category: "competitive-programming"
 ---
 
 眨眼间到了 2025 ICPC 网络预选赛报名时间了，2024 赛年也是早在此之前就结束了。

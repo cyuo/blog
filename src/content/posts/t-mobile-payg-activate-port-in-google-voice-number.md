@@ -1,13 +1,10 @@
 ---
-title: T-Mobile $3 PayGo 预付卡激活，Google Voice 携号转网
+title: "T-Mobile $3 PayGo 预付卡激活，Google Voice 携号转网"
 published: 2025-08-08
-description: ''
-image: ''
-tags: []
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+category: "tutorial"
 ---
+
 这篇文章详细记录了如何激活一张 T-Mobile PayGo 号码卡，以及如何将 Google Voice 号码成功携号转网到这张卡上。
 
 PayGo（即 Pay as You Go）套餐曾经是很多人的首选，但现在情况大有不同。

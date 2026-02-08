@@ -1,12 +1,10 @@
 ---
-title: 跳跃次数查询 根号分治
-published: 2025-01-16 19:52:25
-description: ''
-image: ''
-tags: [divide]
-category: '算法竞赛'
-draft: false 
-lang: ''
+title: "跳跃次数查询 根号分治"
+published: 2025-01-16
+draft: false
+tags:
+  - "divide"
+category: "competitive-programming"
 ---
 
 这是 baozii 佬的废稿，我觉得很有意思所以做个记录，另外这是我第一次接触根号分治这种算法 ~~不在提高组的大纲里我不会，那不是很正常~~。

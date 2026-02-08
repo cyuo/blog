@@ -1,12 +1,10 @@
 ---
-title: 第一次参与 Div.1（Codeforces Round 1040）
+title: "第一次参与 Div.1（Codeforces Round 1040）"
 published: 2025-08-01
-description: ''
-image: ''
-tags: [codeforces]
-category: '算法竞赛'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "codeforces"
+category: "competitive-programming"
 ---
 
 CF 偶遇 Div.1，C 题交互强如怪物，拼劲全力无法战胜。

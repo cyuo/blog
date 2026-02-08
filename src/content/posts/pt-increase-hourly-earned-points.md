@@ -1,23 +1,22 @@
 ---
-title: 5 天手动[数据删除]时魔上 Top 250，我是那么做的。
+title: "5 天手动[数据删除]时魔上 Top 250，我是那么做的。"
 published: 2025-09-12
-description: ''
-image: ''
-tags: [torrent, misc]
-category: '杂项'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "torrent"
+  - "misc"
+category: "misc"
 ---
 
 观察一下[数据删除]时魔公式
 
-\[
+$$
 A=\sum_{i}(1-10^{-{T_i \over T_0}})\times S_i \times (1+\sqrt{2}\times 10 ^{-{N_i-1\over N_0-1}})
-\]
+$$
 
-\[
+$$
 B=B_0 \times {2\over \pi} \arctan ({A \over L})
-\]
+$$
 
 其中：
 

@@ -1,13 +1,14 @@
 ---
-title: ICPC 2025 网络预选赛 参赛记录
+title: "ICPC 2025 网络预选赛 参赛记录"
 published: 2025-09-15
-description: ''
-image: ''
-tags: [xcpc, icpc, misc]
-category: '算法竞赛'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "xcpc"
+  - "icpc"
+  - "misc"
+category: "competitive-programming"
 ---
+
 ## 第一场
 
 前一天刚 VP 香港站，拿到银牌上游的成绩，让我对第一场网络赛信心满满。

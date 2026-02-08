@@ -1,13 +1,13 @@
 ---
-title: 一次为 WordPress 自定义新功能
+title: "一次为 WordPress 自定义新功能"
 published: 2025-09-12
-description: ''
-image: ''
-tags: [wordpress, misc]
-category: '杂项'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "wordpress"
+  - "misc"
+category: "misc"
 ---
+
 最近对站点做了一些小改进。
 
 文章永久链接新增占位符 %UUID%，基于 INT 128 自动生成。这样以后就不用为了 URL 手动把标题翻译成英文了，而且 UUID 的长度通常比大部分翻译后的文本更短、更简洁。

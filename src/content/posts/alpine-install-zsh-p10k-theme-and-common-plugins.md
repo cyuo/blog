@@ -1,13 +1,13 @@
 ---
-title: Alpine Linux 安装 Oh-My-Zsh 并配置 P10K 主题和常用插件
+title: "Alpine Linux 安装 Oh-My-Zsh 并配置 P10K 主题和常用插件"
 published: 2025-08-18
-description: ''
-image: ''
-tags: [alpine, zsh]
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "alpine"
+  - "zsh"
+category: "tutorial"
 ---
+
 切换到用户目录
 
 ```bash

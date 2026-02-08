@@ -7,77 +7,71 @@ import type {
 	ProfileConfig,
 	SiteConfig,
 } from "./types/config";
-import { LinkPreset } from "./types/config";
 
 export const siteConfig: SiteConfig = {
 	title: "Zirkeln",
 	subtitle: "Yet another Fuwari blog site",
-	lang: "zh_CN", // Language code, e.g. 'en', 'zh_CN', 'ja', etc.
+	lang: "zh_CN",
 	themeColor: {
-		hue: 250, // Default hue for the theme color, from 0 to 360. e.g. red: 0, teal: 200, cyan: 250, pink: 345
-		fixed: false, // Hide the theme color picker for visitors
+		hue: 250,
+		fixed: false,
 	},
 	banner: {
 		enable: true,
-		src: "assets/img/111024784_p0.png", // Relative path for local images in src/assets
-		position: "center", // Equivalent to object-position, only supports 'top', 'center', 'bottom'. 'center' by default
+		src: "https://i.zrn.net/pic/111024784_p0_bebcff40a6.png",
+		position: "center",
 		credit: {
-			enable: false, // Display the credit text of the banner image
-			text: "", // Credit text to be displayed
-			url: "", // (Optional) URL link to the original artwork or artist's page
+			enable: true,
+			text: "空色天絵 / NEO TOKYO NOIR 01",
+			url: "https://www.pixiv.net/artworks/111024784",
 		},
 	},
 	toc: {
-		enable: true, // Display the table of contents on the right side of the post
-		depth: 2, // Maximum heading depth to show in the table, from 1 to 3
+		enable: true,
+		depth: 3,
 	},
 	favicon: [
-		// Leave this array empty to use the default favicon
 		{
-			src: "/favicon.ico", // Path of the favicon, relative to the /public directory
-			//   theme: 'light',              // (Optional) Either 'light' or 'dark', set only if you have different favicons for light and dark mode
-			//   sizes: '32x32',              // (Optional) Size of the favicon, set only if you have favicons of different sizes
+			src: "https://i.zrn.net/pic/favicon_abf477e56d.ico",
 		},
 	],
 };
 
 export const navBarConfig: NavBarConfig = {
 	links: [
-		LinkPreset.Home,
-		LinkPreset.Archive,
-		LinkPreset.Friends,
-		LinkPreset.About,
+		{
+			name: "首页",
+			url: "/",
+			external: false,
+		},
+		{
+			name: "归档",
+			url: "/archive/",
+			external: false,
+		},
+		{
+			name: "友链",
+			url: "/friends/",
+			external: false,
+		},
+		{
+			name: "关于",
+			url: "/about/",
+			external: false,
+		},
 		{
 			name: "开往",
-			url: "https://www.travellings.cn/go.html", // Internal links should not include the base path, as it is automatically added
-			external: true, // Show an external link icon and will open in a new tab
+			url: "https://www.travellings.cn/go.html",
+			external: true,
 		},
 	],
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/img/seia_avatar.webp", // Relative to the /src directory. Relative to the /public directory if it starts with '/'
+	avatar: "https://i.zrn.net/pic/seia_avatar_15278c5941.webp",
 	name: "Poi",
 	bio: "Darkness cannot drive out darkness, only light can do that. Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.",
-	links: [
-		// {
-		// 	name: "Twitter",
-		// 	icon: "fa6-brands:twitter", // Visit https://icones.js.org/ for icon codes
-		// 	// You will need to install the corresponding icon set if it's not already included
-		// 	// `pnpm add @iconify-json/<icon-set-name>`
-		// 	url: "https://twitter.com",
-		// },
-		// {
-		// 	name: "Steam",
-		// 	icon: "fa6-brands:steam",
-		// 	url: "https://store.steampowered.com",
-		// },
-		// {
-		// 	name: "GitHub",
-		// 	icon: "fa6-brands:github",
-		// 	url: "https://github.com/saicaca/fuwari",
-		// },
-	],
+	links: [],
 };
 
 export const licenseConfig: LicenseConfig = {
@@ -100,38 +94,10 @@ export const beianConfig: BeianConfig = {
 };
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
-	// Note: Some styles (such as background color) are being overridden, see the astro.config.mjs file.
-	// Please select a dark theme, as this blog theme currently only supports dark background color
 	theme: "github-dark",
 };
 
 export const friends: Friend[] = [
-	// 在这里添加你的友链
-	// 示例：
-	// {
-	// 	name: "示例博客",
-	// 	url: "https://example.com",
-	// 	avatar: "https://example.com/avatar.png",
-	// 	description: "这是一个示例友链",
-	// },
-	{
-		name: "AcoFork Blog",
-		url: "https://2x.nz/",
-		avatar: "assets/img/2xnz_headimg_dl.jpg",
-		description: "Protect What You Love.",
-	},
-	{
-		name: "Aliya",
-		url: "https://rin.1143520.xyz/",
-		avatar: "assets/img/rin.1143520.xyz_.avif",
-		description: "【无所事事】我的乐园。",
-	},
-	{
-		name: "FallingSakura",
-		url: "https://fallingsakura.top/",
-		avatar: "assets/img/fallingsakura.webp",
-		description: "None",
-	},
 	{
 		name: "孤傲导航 – Guao Navs",
 		url: "https://guao.de/",
@@ -140,10 +106,28 @@ export const friends: Friend[] = [
 			"孤傲个人拥有，孤傲导航，乐此书签，简洁导航，云链接，个人导航，个人书签，扩展，多用户",
 	},
 	{
+		name: "AcoFork Blog",
+		url: "https://2x.nz/",
+		avatar: "https://i.zrn.net/pic/2xnz_headimg_dl_b8d43a96fe.jpg",
+		description: "Protect What You Love.",
+	},
+	{
+		name: "Aliya",
+		url: "https://rin.1143520.xyz/",
+		avatar: "https://i.zrn.net/pic/rin_1143520_xyz_3f170452ed.avif",
+		description: "【无所事事】我的乐园。",
+	},
+	{
+		name: "FallingSakura",
+		url: "https://fallingsakura.top/",
+		avatar: "https://i.zrn.net/pic/fallingsakura_badbe54a29.webp",
+		description: "None",
+	},
+	{
 		name: "皓子的小站",
 		url: "https://howiehz.top",
 		avatar:
-			"assets/img/howiehz_ico-r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4.webp",
+			"https://i.zrn.net/pic/howiehz_ico_r9mky97vapswod6h06tgyav7ch9bs0gtq8u3bz2xy4_56abf3536d.webp",
 		description:
 			"互联网是一片海洋，网站犹如一座座孤岛漂浮在其上，唯有超链接将它们联系起来。而此处恰好就是一座小岛，欢迎访问皓子的小站。",
 	},
@@ -151,7 +135,7 @@ export const friends: Friend[] = [
 		name: "静观小窗",
 		url: "https://www.vindo.cn/",
 		avatar:
-			"assets/img/jcblog.com_.cn_.profilephoto-rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4.webp",
+			"https://i.zrn.net/pic/jcblog_com_cn_profilephoto_rata12m8yczu269rjguyp94oqwzogcuqk5q6uflie4_b61e4c0e28.webp",
 		description:
 			"Developer，业余平面设计，细节控，Archer，南宋｜五代｜北朝历史爱好者。",
 	},

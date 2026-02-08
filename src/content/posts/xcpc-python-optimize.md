@@ -1,13 +1,13 @@
 ---
-title: 【转】分享｜算法竞赛中 Python 的优化技巧
+title: "【转】分享｜算法竞赛中 Python 的优化技巧"
 published: 2025-10-01
-description: ''
-image: ''
-tags: [xcpc, python]
-category: '算法竞赛'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "xcpc"
+  - "python"
+category: "competitive-programming"
 ---
+
 ## 站长留言
 
 转自 [分享｜算法竞赛中 Python 的优化技巧 - FatalError](https://leetcode.cn/discuss/post/3746464/suan-fa-jing-sai-zhong-python-de-you-hua-ev8o/)。

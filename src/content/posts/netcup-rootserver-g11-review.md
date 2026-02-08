@@ -1,12 +1,10 @@
 ---
-title: netcup Root Server G11 活动翻倍款 测评
+title: "netcup Root Server G11 活动翻倍款 测评"
 published: 2025-07-31
-description: ''
-image: ''
-tags: [netcup]
-category: '产品测评'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "netcup"
+category: "product-review"
 ---
 
 ## 提醒汇总

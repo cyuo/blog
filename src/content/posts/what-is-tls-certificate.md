@@ -1,13 +1,13 @@
 ---
-title: TLS 证书是什么？为什么我们需要证书透明度制度？
+title: "TLS 证书是什么？为什么我们需要证书透明度制度？"
 published: 2025-08-02
-description: ''
-image: ''
-tags: [tls, introduction]
-category: '科普教程'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "tls"
+  - "introduction"
+category: "tutorial-1"
 ---
+
 今天看了[【二叉树树】为什么你的网站从没公开过还被打？其实是被扫SSL了！](https://www.bilibili.com/video/BV1Tfh7zREEC/)这个视频，视频中提到了[Certificate Search](https://crt.sh)这个网站，支持搜索一个域名的所有 TLS 证书。
 
 这个网站正是利用了证书透明度（Certificate Transparency）这个机制，实现了搜索 TLS 证书的功能。正好有了思路，我想向大家介绍一下，证书是什么？证书透明度又是什么？为什么我们需要它？

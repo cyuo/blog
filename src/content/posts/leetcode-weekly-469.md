@@ -1,12 +1,10 @@
 ---
-title: 【赛时 AK】LeetCode 周赛 469 题解
+title: "【赛时 AK】LeetCode 周赛 469 题解"
 published: 2025-09-28
-description: ''
-image: ''
-tags: [xcpc]
-category: '算法竞赛'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "xcpc"
+category: "competitive-programming"
 ---
 
 ## 1. [计算十进制表示](https://leetcode.cn/problems/compute-decimal-representation/)

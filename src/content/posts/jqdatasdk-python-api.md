@@ -1,13 +1,13 @@
 ---
-title: JQDataSDK Python 基金数据查询
-published: 2025-01-17 14:48:31
-description: ''
-image: ''
-tags: [api, python]
-category: '技术教程'
-draft: false 
-lang: ''
+title: "JQDataSDK Python 基金数据查询"
+published: 2025-01-17
+draft: false
+tags:
+  - "api"
+  - "python"
+category: "tutorial"
 ---
+
 ## 维护
 
 ### 安装

@@ -1,13 +1,10 @@
 ---
-title: 利用脚本快速给 VPS，VDS 云服务器重装系统
+title: "利用脚本快速给 VPS，VDS 云服务器重装系统"
 published: 2025-07-30
-description: ''
-image: ''
-tags: []
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+category: "tutorial"
 ---
+
 经实测，无论是阿里云、NetCup 等大型云服务商，还是一些小型商家甚至个人运营的 KVM、Hyper-V 服务器，本脚本都能正常使用。
 
 本脚本不支持 OpenVZ 或 LXC 虚拟化环境。对于此类虚拟机，建议使用  

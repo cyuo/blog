@@ -1,0 +1,45 @@
+---
+import ArchivePanel from "@components/ArchivePanel.svelte";
+import I18nKey from "@i18n/i18nKey";
+import { i18n } from "@i18n/translation";
+import MainGridLayout from "@layouts/MainGridLayout.astro";
+import { getSortedPostsList } from "../../utils/content-utils";
+import taxonomyMap from "../../utils/taxonomy-map.json";
+
+export async function getStaticPaths() {
+	const sortedPostsList = await getSortedPostsList();
+
+	// Get all unique tag slugs
+	const tagMap = new Map();
+	sortedPostsList.forEach((post) => {
+		const tags = post.data.tags || [];
+
+		tags.forEach((tagSlug) => {
+			if (!tagMap.has(tagSlug)) {
+				tagMap.set(tagSlug, {
+					slug: tagSlug,
+					posts: [],
+				});
+			}
+			tagMap.get(tagSlug).posts.push(post);
+		});
+	});
+
+	return Array.from(tagMap.values()).map((tag) => ({
+		params: { slug: tag.slug },
+		props: {
+			filteredPosts: tag.posts,
+			allPosts: sortedPostsList,
+		},
+	}));
+}
+
+const { slug } = Astro.params;
+const { filteredPosts } = Astro.props;
+const tagName =
+	(taxonomyMap.tags as Record<string, string>)[slug as string] || slug;
+---
+
+<MainGridLayout title={`${i18n(I18nKey.archive)} - #${tagName}`}>
+    <ArchivePanel sortedPosts={filteredPosts} tags={[slug]} taxonomyMap={taxonomyMap} client:only="svelte"></ArchivePanel>
+</MainGridLayout>

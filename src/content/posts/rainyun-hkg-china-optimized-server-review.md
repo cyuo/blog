@@ -1,12 +1,8 @@
 ---
-title: 雨云 香港 极速三网CN2/CMI/CUG 服务器 高防线路 测评
+title: "雨云 香港 极速三网CN2/CMI/CUG 服务器 高防线路 测评"
 published: 2025-08-06
-description: ''
-image: ''
-tags: []
-category: '产品评测'
-draft: false 
-lang: ''
+draft: false
+category: "product-review-1"
 ---
 
 官方宣称其直连高防线路延迟在 60ms。但我本地测试延迟非常不稳定，在 80-110 ms 之间抖动。

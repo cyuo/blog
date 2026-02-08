@@ -1,6 +1,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
+import { getCategoryName } from "@utils/taxonomy";
 import { getCategoryUrl } from "@utils/url-utils.ts";
 
 // // Retrieve posts and sort them by publication date
@@ -90,12 +91,12 @@ export async function getCategoryList(): Promise<Category[]> {
 			return;
 		}
 
-		const categoryName =
+		const categorySlug =
 			typeof post.data.category === "string"
 				? post.data.category.trim()
 				: String(post.data.category).trim();
 
-		count[categoryName] = count[categoryName] ? count[categoryName] + 1 : 1;
+		count[categorySlug] = count[categorySlug] ? count[categorySlug] + 1 : 1;
 	});
 
 	const lst = Object.keys(count).sort((a, b) => {
@@ -103,11 +104,11 @@ export async function getCategoryList(): Promise<Category[]> {
 	});
 
 	const ret: Category[] = [];
-	for (const c of lst) {
+	for (const categorySlug of lst) {
 		ret.push({
-			name: c,
-			count: count[c],
-			url: getCategoryUrl(c),
+			name: getCategoryName(categorySlug),
+			count: count[categorySlug],
+			url: getCategoryUrl(categorySlug),
 		});
 	}
 	return ret;

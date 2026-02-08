@@ -1,12 +1,11 @@
 ---
-title: 虚拟云服务器 Linux TCP 参数调优，轻松跑万兆
+title: "虚拟云服务器 Linux TCP 参数调优，轻松跑万兆"
 published: 2025-08-18
-description: ''
-image: ''
-tags: [linux, tcp]
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "linux"
+  - "tcp"
+category: "tutorial"
 ---
 
 本调参来自 VPS.Town Debian 13 Trixie 优化镜像，官方测试结果如下：

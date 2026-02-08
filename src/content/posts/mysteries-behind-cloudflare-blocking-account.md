@@ -1,12 +1,10 @@
 ---
-title: 【转】Cloudflare 账号封禁背后那不为人知的秘密
+title: "【转】Cloudflare 账号封禁背后那不为人知的秘密"
 published: 2025-08-10
-description: ''
-image: ''
-tags: [misc]
-category: '杂项'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "misc"
+category: "misc"
 ---
 
 **前言**：最近，如果你常逛各大技术论坛或活跃在某些频道，大概率会感受到一股不安的气氛。许多玩家，尤其是热衷于“All in Boom”和自建服务的用户，纷纷晒出了来自 Cloudflare 官方的“账号封禁”或“服务停用”邮件。风暴的中心，似乎直指近期大火的几个开源影音项目（如 **LibreTV**、**MoonTV**）以及对 **Cloudflare Workers/Pages** 的“创造性”使用。这并非空穴来风，而是一次集中性的风险爆发。本文将深入剖析这次封禁事件背后的完整逻辑链，并为你提供一份详尽的“生存指南”。

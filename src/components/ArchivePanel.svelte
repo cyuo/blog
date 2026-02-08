@@ -22,12 +22,17 @@ interface Props {
 	tags?: string[];
 	categories?: string[];
 	sortedPosts?: Post[];
+	taxonomyMap?: {
+		categories: Record<string, string>;
+		tags: Record<string, string>;
+	};
 }
 
 let {
 	tags = $bindable([]),
 	categories = $bindable([]),
 	sortedPosts = [],
+	taxonomyMap = { categories: {}, tags: {} },
 }: Props = $props();
 
 const params = new URLSearchParams(window.location.search);
@@ -44,7 +49,7 @@ function formatDate(date: Date) {
 }
 
 function formatTag(tagList: string[]) {
-	return tagList.map((t) => `#${t}`).join(" ");
+	return tagList.map((slug) => `#${taxonomyMap.tags[slug] || slug}`).join(" ");
 }
 
 $effect(() => {

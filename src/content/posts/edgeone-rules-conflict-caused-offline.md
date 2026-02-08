@@ -1,13 +1,13 @@
 ---
-title: EdgeOne 规则冲突导致站点下线约 48 小时
+title: "EdgeOne 规则冲突导致站点下线约 48 小时"
 published: 2025-08-21
-description: ''
-image: ''
-tags: [edgeone, misc]
-category: '杂项'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "edgeone"
+  - "misc"
+category: "misc"
 ---
+
 EdgeOne 是腾讯云提供的边缘加速服务，用于网站加速和防护。本站点使用了 EdgeOne 的全球加速服务。它的免费版不限制流量，但限制单线程速度在约 500KB/s，这对大多数个人站点来说已经足够。
 
 腾讯云国内站的 EdgeOne 免费版原本需要兑换码。不过有一个替代方式：随便购买一个付费版本（最便宜的是个人版 9.99 元/月，附带 50GB 流量），等套餐过期后会自动转为免费版。

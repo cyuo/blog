@@ -1,12 +1,13 @@
 ---
-title: 使二进制字符串字符交替的最少反转次数 Leetcode.1888 题解 滑动窗口
-published: 2025-01-16 18:45:29
-description: ''
-image: ''
-tags: [sliding window, string, greedy, leetcode]
-category: '算法竞赛'
-draft: false 
-lang: ''
+title: "使二进制字符串字符交替的最少反转次数 Leetcode.1888 题解 滑动窗口"
+published: 2025-01-16
+draft: false
+tags:
+  - "sliding-window"
+  - "string"
+  - "greedy"
+  - "leetcode"
+category: "competitive-programming"
 ---
 
 Leetcode 的题目一般偏板子，除了难到我的板子题 ~~被板子难到太菜了~~ 我写一下题解。

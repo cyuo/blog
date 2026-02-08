@@ -1,13 +1,14 @@
 ---
-title: 逆元的计算 / Python 自带的逆元
-published: 2025-01-19 16:07:29
-description: ''
-image: ''
-tags: [inversion, math, python]
-category: '算法竞赛'
-draft: false 
-lang: ''
+title: "逆元的计算 / Python 自带的逆元"
+published: 2025-01-19
+draft: false
+tags:
+  - "inversion"
+  - "math"
+  - "python"
+category: "competitive-programming"
 ---
+
 简单来说，逆元就是求 ${1\over a}\bmod p$，其中 $\gcd(a,p)=1$。
 
 形式化的说，我们要求同余方程 $ax\equiv1\pmod p$ 的解。

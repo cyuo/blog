@@ -1,13 +1,14 @@
 ---
-title: Vertex JavaScript 规则，自动删已被 Tracker 报错种
+title: "Vertex JavaScript 规则，自动删已被 Tracker 报错种"
 published: 2025-09-09
-description: ''
-image: ''
-tags: [vertex, torrent, javascript]
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "vertex"
+  - "torrent"
+  - "javascript"
+category: "tutorial"
 ---
+
 ```javascript
 (maindata, torrent) => {
   const categoryList = ["不删", "ipt", "TL"];

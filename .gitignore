@@ -32,3 +32,8 @@ yarn.lock
 
 # claude
 .claude
+
+# content
+src/content/posts/*
+src/content/spec/*
+

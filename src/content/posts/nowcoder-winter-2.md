@@ -1,13 +1,20 @@
 ---
-title: 2025 牛客寒假算法基础集训营 2 个人题解
-published: 2025-01-23 21:18:26
-description: ''
-image: ''
-tags: [sort, greedy, math, data structure, simulate, dfs, combination, fenwick, discrete]
-category: '算法竞赛'
-draft: false 
-lang: ''
+title: "2025 牛客寒假算法基础集训营 2 个人题解"
+published: 2025-01-23
+draft: false
+tags:
+  - "sort"
+  - "greedy"
+  - "math"
+  - "data-structure"
+  - "simulate"
+  - "dfs"
+  - "combination"
+  - "fenwick"
+  - "discrete"
+category: "competitive-programming"
 ---
+
 ## A 一起奏响历史之音！
 
 签到，判断 `a>=1 and a<=6 and a!=4` 即可。

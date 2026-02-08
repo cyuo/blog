@@ -1,13 +1,13 @@
 ---
-title: 如何在 WordPress 内插入 Bilibili 视频？
+title: "如何在 WordPress 内插入 Bilibili 视频？"
 published: 2025-08-21
-description: ''
-image: ''
-tags: [wordpress, bilibili]
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "wordpress"
+  - "bilibili"
+category: "tutorial"
 ---
+
 ## 操作步骤
 
 ### 1. 获取嵌入代码

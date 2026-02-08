@@ -211,6 +211,9 @@ export default defineConfig({
 	},
 	vite: {
 		plugins: [tailwindcss()],
+		server: {
+			allowedHosts: [],
+		},
 		build: {
 			// 使用 terser 进行代码压缩和混淆
 			minify: "terser",

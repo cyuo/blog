@@ -5,11 +5,12 @@ html.is-changing .transition-swup-fade {
     transform: translateZ(0);
 }
 html.is-animating .transition-swup-fade {
-    @apply opacity-0
+    @apply opacity-0;
+    pointer-events: none;
 }
 
-/* Swup fade out animations - exclude navbar and sidebar */
-html.is-animating .onload-animation:not(#navbar):not(#sidebar *):not(#sidebar) {
+/* Swup fade out animations - exclude navbar, sidebar, and banner-credit */
+html.is-animating .onload-animation:not(#navbar):not(#sidebar *):not(#sidebar):not(#banner-credit) {
     animation: 250ms ease-in fade-out-down;
     animation-fill-mode: forwards;
 }

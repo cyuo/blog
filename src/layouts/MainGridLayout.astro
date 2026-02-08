@@ -31,20 +31,17 @@ const {
 	setOGTypeArticle,
 	headings = [],
 } = Astro.props;
-const hasBannerCredit =
-	siteConfig.banner.enable && siteConfig.banner.credit.enable;
-const hasBannerLink = !!siteConfig.banner.credit.url;
 
-// Check if current page is home or a post
 const isHomePage = pathsEqual(Astro.url.pathname, url("/"));
 const isPostPage = Astro.url.pathname.includes("/posts/");
 
-// Show banner only on home page and post pages
+const hasBannerLink = !!siteConfig.banner.credit.url;
+
 const showBanner = siteConfig.banner.enable && (isHomePage || isPostPage);
 
 const mainPanelTop = showBanner
 	? `calc(var(--banner-height-current) - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
-	: "calc(4.5rem + 2rem)"; // navbar height (4.5rem) + gap (2rem)
+	: "calc(4.5rem + 2rem)";
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle} enableBanner={showBanner}>
@@ -57,7 +54,7 @@ const mainPanelTop = showBanner
     </div>
 </div>
 
-<!-- Banner - always render container for Swup consistency; hide via opacity/visibility to avoid layout jumps -->
+<!-- Banner -->
 <div
 	id="banner-wrapper"
 	class={`absolute z-10 w-full overflow-hidden transition duration-700`}
@@ -90,23 +87,28 @@ const mainPanelTop = showBanner
 
 <!-- Main content -->
 <div id="main-content-wrapper" class="absolute w-full z-30 pointer-events-none" style={`top: ${mainPanelTop}; transition: top 0.6s ease-out;`}>
-    <!-- The pointer-events-none here prevent blocking the click event of the TOC -->
     <div class="relative max-w-[var(--page-width)] mx-auto pointer-events-auto">
         <div id="main-grid" class="transition duration-700 w-full left-0 right-0 grid grid-cols-[17.5rem_auto] grid-rows-[auto_1fr_auto] lg:grid-rows-[auto]
     mx-auto gap-4 px-0 md:px-4"
         >
-            <!-- Content above main-grid (for post metadata, title, etc.) -->
-            <!-- Using absolute positioning to place content above main-grid without affecting its position -->
-            <!-- Always render for Swup consistency -->
             <div id="post-metadata-container" class="absolute bottom-full left-0 right-0 w-full px-0 md:px-4 pb-4 pointer-events-auto">
                 <div class="rounded-[var(--radius-large)] overflow-hidden backdrop-blur-2xl bg-[var(--card-bg)] shadow-lg transition transition-swup-fade">
                     <slot name="before-grid"></slot>
                 </div>
             </div>
-            <!-- Banner image credit -->
-            {hasBannerCredit && <a href={siteConfig.banner.credit.url} id="banner-credit" target="_blank" rel="noopener" aria-label="Visit image source"
-                                   class:list={["group onload-animation transition-all absolute flex justify-center items-center rounded-full " +
-                                   "px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9", {"hover:pr-9 active:bg-black/80": hasBannerLink}]}
+
+            {siteConfig.banner.enable && siteConfig.banner.credit.enable && <a
+                href={siteConfig.banner.credit.url}
+                id="banner-credit"
+                target="_blank"
+                rel="noopener"
+                aria-label="Visit image source"
+                data-credit-url={siteConfig.banner.credit.url}
+                data-credit-text={siteConfig.banner.credit.text}
+                class:list={["group onload-animation transition-swup-fade transition-opacity duration-300 absolute flex justify-center items-center rounded-full " +
+                "px-3 right-4 -top-[3.25rem] bg-black/60 hover:bg-black/70 h-9",
+                {"hover:pr-9 active:bg-black/80": hasBannerLink},
+                {"opacity-0 pointer-events-none": !isHomePage}]}
             >
                 <Icon class="text-white/75 text-[1.25rem] mr-1" name="material-symbols:copyright-outline-rounded" ></Icon>
                 <div class="text-white/75 text-xs">{siteConfig.banner.credit.text}</div>
@@ -116,21 +118,18 @@ const mainPanelTop = showBanner
                 </Icon>
             </a>}
 
+            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem] onload-animation" headings={headings}></SideBar>
 
-            <SideBar class="mb-4 row-start-2 row-end-3 col-span-2 lg:row-start-1 lg:row-end-2 lg:col-span-1 lg:max-w-[17.5rem]" headings={headings}></SideBar>
-
-            <main class="col-span-2 lg:col-span-1 overflow-hidden">
-                <div id="swup-container" class="transition-swup-fade">
-                    <!-- the overflow-hidden here prevent long text break the layout-->
-                    <!-- make id different from windows.swup global property -->
+            <main id="swup-container" class="transition-swup-fade col-span-2 lg:col-span-1 overflow-hidden">
+                <div id="content-wrapper" class="onload-animation">
                     <slot></slot>
-                    <div class="footer col-span-2 hidden lg:block">
+                    <div class="footer col-span-2 onload-animation hidden lg:block">
                         <Footer></Footer>
                     </div>
                 </div>
             </main>
 
-            <div class="footer col-span-2 block lg:hidden">
+            <div class="footer col-span-2 onload-animation block lg:hidden">
                 <Footer></Footer>
             </div>
         </div>
@@ -142,7 +141,6 @@ const mainPanelTop = showBanner
 <!-- The things that should be under the banner, only the TOC for now -->
 <div class="absolute w-full z-0 hidden 2xl:block">
     <div class="relative max-w-[var(--page-width)] mx-auto">
-        <!-- TOC component -->
         {siteConfig.toc.enable && <div id="toc-wrapper" class:list={["hidden lg:block transition absolute top-0 -right-[var(--toc-width)] w-[var(--toc-width)] items-center",
             {"toc-hide": siteConfig.banner.enable}]}
         >
@@ -155,8 +153,32 @@ const mainPanelTop = showBanner
             </div>
         </div>}
 
-        <!-- #toc needs to exist for Swup to work normally -->
         {!siteConfig.toc.enable && <div id="toc"></div>}
     </div>
 </div>
+
+<script>
+function updateBannerCredit() {
+    const credit = document.getElementById('banner-credit');
+    if (!credit) return;
+
+    const currentPath = window.location.pathname;
+    const basePath = import.meta.env.BASE_URL || '/';
+    const normalizedCurrent = currentPath.replace(/^\/|\/$/g, '').toLowerCase();
+    const normalizedBase = basePath.replace(/^\/|\/$/g, '').toLowerCase();
+    const isHomePage = normalizedCurrent === normalizedBase;
+
+    if (isHomePage) {
+        credit.classList.remove('opacity-0', 'pointer-events-none');
+    } else {
+        credit.classList.add('opacity-0', 'pointer-events-none');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', updateBannerCredit);
+
+if (window.swup) {
+    window.swup.hooks.on('page:view', updateBannerCredit);
+}
+</script>
 </Layout>

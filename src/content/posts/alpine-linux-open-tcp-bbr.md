@@ -1,13 +1,13 @@
 ---
-title: Alpine Linux 开启 TCP BBR
+title: "Alpine Linux 开启 TCP BBR"
 published: 2025-08-18
-description: ''
-image: ''
-tags: [alpine, bbr]
-category: '技术教程'
-draft: false 
-lang: ''
+draft: false
+tags:
+  - "alpine"
+  - "bbr"
+category: "tutorial"
 ---
+
 以下所有操作均需在 root 用户下执行，非 root 先切换到 root 用户
 
 ```bash

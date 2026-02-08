@@ -1,13 +1,17 @@
 ---
-title: 2025 牛客寒假算法基础集训营 1 个人题解
-published: 2025-01-21 20:57:00
-description: ''
-image: ''
-tags: [sort, greedy, trisection, math, data structure, simulate]
-category: '算法竞赛'
-draft: false 
-lang: ''
+title: "2025 牛客寒假算法基础集训营 1 个人题解"
+published: 2025-01-21
+draft: false
+tags:
+  - "sort"
+  - "greedy"
+  - "trisection"
+  - "math"
+  - "data-structure"
+  - "simulate"
+category: "competitive-programming"
 ---
+
 这场一道 DP 都没有，思维题为主，很神奇。
 
 ## A 茕茕孑立之影

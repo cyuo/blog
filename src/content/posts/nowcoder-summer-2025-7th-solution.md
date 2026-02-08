@@ -1,12 +1,8 @@
 ---
-title: 2025 牛客暑期多校训练营 7 个人题解
+title: "2025 牛客暑期多校训练营 7 个人题解"
 published: 2025-08-05
-description: ''
-image: ''
-tags: []
-category: '算法竞赛'
-draft: false 
-lang: ''
+draft: false
+category: "competitive-programming"
 ---
 
 记录一下在比赛中遇到的几道个人认为较有挑战性的题目，分享一下解题思路和过程。
