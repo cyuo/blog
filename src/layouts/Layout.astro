@@ -327,7 +327,17 @@ const bannerEnabled = !!document.getElementById('banner-wrapper')
 let pendingDisableBanner = false;
 let previousBannerSrc = '';
 let skipBannerEffectForVisit = false;
+let pendingBannerCompareFromPageLoad = false;
 const bannerSrcByPath = new Map<string, string>();
+
+type SwupVisit = {
+	to: { url: string };
+	animation: { wait: boolean };
+};
+
+type SwupPageLoadArgs = {
+	page?: { html?: string };
+};
 
 function normalizePath(input: string): string {
 	try {
@@ -337,10 +347,10 @@ function normalizePath(input: string): string {
 	}
 }
 
-function normalizeBannerSrc(src: string): string {
+function normalizeBannerSrc(src: string, baseUrl: string = window.location.href): string {
 	if (!src) return '';
 	try {
-		return new URL(src, window.location.href).toString();
+		return new URL(src, baseUrl).toString();
 	} catch {
 		return src;
 	}
@@ -358,6 +368,49 @@ function cacheCurrentBannerSrc() {
 	if (currentBannerSrc) {
 		bannerSrcByPath.set(currentPath, currentBannerSrc);
 	}
+}
+
+function shouldShowBannerForUrl(targetUrl: string): boolean {
+	const isToHome = pathsEqual(targetUrl, url('/'));
+	const isToPost = targetUrl.includes('/posts/');
+	return isToHome || isToPost;
+}
+
+function getBannerSrcFromPageHtml(pageHtml: string, pageUrl: string): string {
+	if (!pageHtml) return '';
+	try {
+		const parsed = new DOMParser().parseFromString(pageHtml, 'text/html');
+		const body = parsed.querySelector('body');
+		if (!body?.classList.contains('enable-banner')) return '';
+
+		const bannerImage = parsed.querySelector('#banner img') as HTMLImageElement | null;
+		if (!bannerImage) return '';
+		const rawSrc =
+			bannerImage.getAttribute('src') ||
+			bannerImage.getAttribute('data-src') ||
+			bannerImage.src ||
+			'';
+		return normalizeBannerSrc(rawSrc, pageUrl);
+	} catch {
+		return '';
+	}
+}
+
+function getCachedTargetBannerSrc(targetUrl: string, targetPath: string): string {
+	const mappedSrc = bannerSrcByPath.get(targetPath) || '';
+	if (mappedSrc) return mappedSrc;
+
+	const swupWithCache = window.swup as unknown as {
+		cache?: { get?: (url: string) => { html?: string } | undefined };
+	};
+	const cachedPage = swupWithCache?.cache?.get?.(targetUrl);
+	if (!cachedPage?.html) return '';
+
+	const cachedBannerSrc = getBannerSrcFromPageHtml(cachedPage.html, targetUrl);
+	if (cachedBannerSrc) {
+		bannerSrcByPath.set(targetPath, cachedBannerSrc);
+	}
+	return cachedBannerSrc;
 }
 
 function setClickOutsideToClose(panel: string, ignores: string[]) {
@@ -501,25 +554,30 @@ const setup = () => {
 	})
 */
 	// Start fading out banner when page transition starts
-	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+	window.swup.hooks.on('visit:start', (visit: SwupVisit) => {
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
 		if (!bodyElement) return;
-		const isToHome = pathsEqual(visit.to.url, url('/'));
-		const isToPost = visit.to.url.includes('/posts/');
-		const shouldShowBanner = isToHome || isToPost;
+		const shouldShowBanner = shouldShowBannerForUrl(visit.to.url);
 		const hadBanner = bodyElement.classList.contains('enable-banner');
 		const targetPath = normalizePath(visit.to.url);
 		const currentBannerSrc = getCurrentBannerSrc();
-		const cachedTargetBannerSrc = bannerSrcByPath.get(targetPath) || '';
+		const targetBannerSrc = getCachedTargetBannerSrc(visit.to.url, targetPath);
 
 		previousBannerSrc = currentBannerSrc;
+		pendingBannerCompareFromPageLoad = false;
 		skipBannerEffectForVisit = !!(
 			shouldShowBanner &&
 			currentBannerSrc &&
-			cachedTargetBannerSrc &&
-			currentBannerSrc === cachedTargetBannerSrc
+			targetBannerSrc &&
+			currentBannerSrc === targetBannerSrc
 		);
+		if (!skipBannerEffectForVisit && shouldShowBanner && currentBannerSrc && !targetBannerSrc) {
+			// For first-time pages missing local/swup cache metadata, wait for page:load
+			// so we can decide before animation:out starts.
+			visit.animation.wait = true;
+			pendingBannerCompareFromPageLoad = true;
+		}
 		document.documentElement.classList.toggle(
 			'disable-banner-transition',
 			skipBannerEffectForVisit,
@@ -557,6 +615,27 @@ const setup = () => {
 		}
 	});
 
+	window.swup.hooks.on('page:load', (visit: SwupVisit, args: SwupPageLoadArgs) => {
+		if (!pendingBannerCompareFromPageLoad) return;
+
+		const nextBannerSrc = getBannerSrcFromPageHtml(args?.page?.html || '', visit.to.url);
+		if (nextBannerSrc) {
+			bannerSrcByPath.set(normalizePath(visit.to.url), nextBannerSrc);
+		}
+		const shouldShowBanner = shouldShowBannerForUrl(visit.to.url);
+		skipBannerEffectForVisit = !!(
+			shouldShowBanner &&
+			previousBannerSrc &&
+			nextBannerSrc &&
+			previousBannerSrc === nextBannerSrc
+		);
+		document.documentElement.classList.toggle(
+			'disable-banner-transition',
+			skipBannerEffectForVisit,
+		);
+		pendingBannerCompareFromPageLoad = false;
+	});
+
 	window.swup.hooks.on('content:replace', async () => {
 		initCustomScrollbar();
 
@@ -565,20 +644,6 @@ const setup = () => {
 			const bodyElement = document.querySelector('body');
 			bodyElement?.classList.remove('enable-banner');
 			pendingDisableBanner = false;
-		}
-
-		// Fallback compare for first-time visits (not yet in cache).
-		if (!skipBannerEffectForVisit) {
-			const nextBannerSrc = getCurrentBannerSrc();
-			skipBannerEffectForVisit = !!(
-				previousBannerSrc &&
-				nextBannerSrc &&
-				previousBannerSrc === nextBannerSrc
-			);
-			document.documentElement.classList.toggle(
-				'disable-banner-transition',
-				skipBannerEffectForVisit,
-			);
 		}
 
 		// Keep main-grid/before-grid structural updates inside the out->in transition window.
@@ -607,6 +672,7 @@ const setup = () => {
 		document.documentElement.classList.remove('disable-banner-transition');
 		previousBannerSrc = '';
 		skipBannerEffectForVisit = false;
+		pendingBannerCompareFromPageLoad = false;
 	});
 }
 if (window?.swup?.hooks) {
