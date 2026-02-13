@@ -3,13 +3,12 @@ import ArchivePanel from "@components/ArchivePanel.svelte";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import MainGridLayout from "@layouts/MainGridLayout.astro";
+import taxonomyMap from "../../assets/meta/taxonomy-map.json";
 import { getSortedPostsList } from "../../utils/content-utils";
 import { getCategoryName } from "../../utils/taxonomy";
-import taxonomyMap from "../../utils/taxonomy-map.json";
-
-const UNCATEGORIZED_SLUG = "uncategorized";
 
 export async function getStaticPaths() {
+	const UNCATEGORIZED_SLUG = "uncategorized";
 	const sortedPostsList = await getSortedPostsList();
 
 	// Get all unique category slugs
@@ -55,13 +54,13 @@ export async function getStaticPaths() {
 		props: {
 			filteredPosts: category.posts,
 			allPosts: sortedPostsList,
+			isUncategorized: category.slug === UNCATEGORIZED_SLUG,
 		},
 	}));
 }
 
 const { slug } = Astro.params;
-const { filteredPosts } = Astro.props;
-const isUncategorized = (slug as string) === UNCATEGORIZED_SLUG;
+const { filteredPosts, isUncategorized } = Astro.props;
 const categoryName = isUncategorized
 	? i18n(I18nKey.uncategorized)
 	: getCategoryName(slug as string);

@@ -12,6 +12,7 @@ import type {
 	StrapiAbout,
 	StrapiCategory,
 	StrapiFetchAllResult,
+	StrapiFriend,
 	StrapiPost,
 	StrapiTag,
 } from "../types/strapi.ts";
@@ -105,13 +106,9 @@ function validateConfig(): boolean {
 	const missing = required.filter((key) => !process.env[key]);
 
 	if (missing.length > 0) {
-		console.log(
-			chalk.yellow(
-				"⚠️  Missing Strapi environment variables, switching to testcase data.",
-			),
-		);
+		console.log(chalk.red("❌ Missing required Strapi environment variables:"));
 		for (const key of missing) {
-			console.log(chalk.yellow(`   - ${key}`));
+			console.log(chalk.red(`   - ${key}`));
 		}
 		return false;
 	}
@@ -184,40 +181,6 @@ function syncFriendsPage(specDir: string, lang: string): void {
 	fs.writeFileSync(friendsPath, markdown, "utf-8");
 }
 
-function copyTestcaseData(): void {
-	const testcaseDir = path.join(rootDir, "testcase");
-	const testcasePostsDir = path.join(testcaseDir, "posts");
-	const testcaseSpecDir = path.join(testcaseDir, "spec");
-	const testcaseConfigPath = path.join(testcaseDir, "config.ts");
-
-	if (!fs.existsSync(testcaseDir)) {
-		throw new Error("Missing testcase directory");
-	}
-	if (!fs.existsSync(testcasePostsDir)) {
-		throw new Error("Missing testcase/posts directory");
-	}
-	if (!fs.existsSync(testcaseSpecDir)) {
-		throw new Error("Missing testcase/spec directory");
-	}
-	if (!fs.existsSync(testcaseConfigPath)) {
-		throw new Error("Missing testcase/config.ts");
-	}
-
-	const targetPostsDir = path.join(rootDir, "src/content/posts");
-	const targetSpecDir = path.join(rootDir, "src/content/spec");
-	const targetConfigPath = path.join(rootDir, "src/config.ts");
-
-	fs.rmSync(targetPostsDir, { recursive: true, force: true });
-	fs.rmSync(targetSpecDir, { recursive: true, force: true });
-	fs.mkdirSync(path.dirname(targetConfigPath), { recursive: true });
-
-	fs.cpSync(testcasePostsDir, targetPostsDir, { recursive: true });
-	fs.cpSync(testcaseSpecDir, targetSpecDir, { recursive: true });
-
-	const testcaseConfig = fs.readFileSync(testcaseConfigPath, "utf-8");
-	fs.writeFileSync(targetConfigPath, testcaseConfig, "utf-8");
-}
-
 function normalizePost(post: StrapiPost): NormalizedPost | undefined {
 	const attrs = post.attributes ?? post;
 
@@ -273,8 +236,36 @@ function writeTaxonomyMap(
 		}
 	}
 
-	const taxonomyPath = path.join(rootDir, "src/utils/taxonomy-map.json");
+	const taxonomyPath = path.join(rootDir, "src/assets/meta/taxonomy-map.json");
+	fs.mkdirSync(path.dirname(taxonomyPath), { recursive: true });
 	fs.writeFileSync(taxonomyPath, JSON.stringify(taxonomyMap, null, 2), "utf-8");
+}
+
+function writeFriendsJson(friends: StrapiFriend[]): void {
+	const friendsData = friends.map((friend) => {
+		const attrs = friend.attributes ?? friend;
+
+		// Extract avatar URL from the media object
+		let avatarUrl = "";
+		if (attrs.avatar) {
+			if (typeof attrs.avatar === "string") {
+				avatarUrl = attrs.avatar;
+			} else if (typeof attrs.avatar === "object" && attrs.avatar.url) {
+				avatarUrl = attrs.avatar.url;
+			}
+		}
+
+		return {
+			name: attrs.name || "",
+			url: attrs.url || "",
+			avatar: avatarUrl,
+			description: attrs.description || "",
+		};
+	});
+
+	const friendsPath = path.join(rootDir, "src/assets/meta/friends.json");
+	fs.mkdirSync(path.dirname(friendsPath), { recursive: true });
+	fs.writeFileSync(friendsPath, JSON.stringify(friendsData, null, 2), "utf-8");
 }
 
 async function syncContent(options: SyncOptions): Promise<void> {
@@ -285,38 +276,10 @@ async function syncContent(options: SyncOptions): Promise<void> {
 
 	const canSync = validateConfig();
 	if (!canSync) {
-		const fallbackSpinner = ora("Using testcase data...").start();
-		try {
-			copyTestcaseData();
-			fallbackSpinner.succeed(chalk.green("✓ Testcase data synced"));
-		} catch (error) {
-			fallbackSpinner.fail(chalk.red("✗ Failed to sync testcase data"));
-			throw new Error(toErrorMessage(error));
-		}
-
-		const versionSpinner = ora("Generating version markdown...").start();
-		try {
-			generateVersionMarkdown({ mode });
-			versionSpinner.succeed(
-				chalk.green(`✓ Version markdown generated (mode=${mode})`),
-			);
-		} catch (error) {
-			versionSpinner.fail(chalk.red("✗ Failed to generate version markdown"));
-			throw new Error(toErrorMessage(error));
-		}
-
-		const friendsSpinner = ora(
-			"Writing src/content/spec/friends.md...",
-		).start();
-		try {
-			const specDir = path.join(rootDir, "src/content/spec");
-			syncFriendsPage(specDir, "zh_CN");
-			friendsSpinner.succeed(chalk.green("✓ Friends page markdown synced"));
-		} catch (error) {
-			friendsSpinner.fail(chalk.red("✗ Failed to sync friends page markdown"));
-			throw new Error(toErrorMessage(error));
-		}
-		return;
+		console.error(
+			chalk.red("\n❌ Sync failed: Missing required environment variables\n"),
+		);
+		process.exit(1);
 	}
 
 	const strapiUrl = process.env.STRAPI_URL;
@@ -422,6 +385,15 @@ async function syncContent(options: SyncOptions): Promise<void> {
 		taxonomySpinner.succeed(chalk.green("✓ Taxonomy mapping generated"));
 	} catch (error) {
 		taxonomySpinner.fail(chalk.red("✗ Failed to generate taxonomy mapping"));
+		console.error(chalk.red(`   Error: ${toErrorMessage(error)}`));
+	}
+
+	const friendsJsonSpinner = ora("Generating friends.json...").start();
+	try {
+		writeFriendsJson(data.friends);
+		friendsJsonSpinner.succeed(chalk.green("✓ Friends JSON generated"));
+	} catch (error) {
+		friendsJsonSpinner.fail(chalk.red("✗ Failed to generate friends JSON"));
 		console.error(chalk.red(`   Error: ${toErrorMessage(error)}`));
 	}
 

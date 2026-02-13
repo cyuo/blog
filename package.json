@@ -3,17 +3,16 @@
 	"type": "module",
 	"version": "0.1.0",
 	"scripts": {
-		"dev": "tsx scripts/bootstrap.ts && astro dev",
+		"dev": "astro dev",
 		"check": "astro check",
-		"build": "tsx scripts/bootstrap.ts && astro build && pagefind --site dist",
+		"build": "astro build && pagefind --site dist",
 		"preview": "astro preview",
 		"astro": "astro",
 		"type-check": "tsc --noEmit --isolatedDeclarations",
 		"format": "biome format --write ./src",
 		"lint": "biome check --write ./src",
 		"preinstall": "npx only-allow pnpm",
-		"bootstrap": "tsx scripts/bootstrap.ts",
-		"pull": "tsx scripts/bootstrap.ts && tsx src/integration/prebuild.ts"
+		"pull": "tsx src/integration/prebuild.ts"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9.6",
@@ -31,7 +30,7 @@
 		"@iconify-json/fa6-brands": "^1.2.6",
 		"@iconify-json/fa6-regular": "^1.2.4",
 		"@iconify-json/fa6-solid": "^1.2.4",
-		"@iconify-json/material-symbols": "^1.2.54",
+		"@iconify-json/material-symbols": "^1.2.55",
 		"@iconify/svelte": "^5.2.1",
 		"@swup/astro": "^1.7.0",
 		"@tailwindcss/typography": "^0.5.19",
@@ -47,11 +46,11 @@
 		"astro-expressive-code": "^0.41.6",
 		"astro-icon": "^1.1.5",
 		"chalk": "^5.6.2",
-		"dotenv": "^17.2.4",
+		"dotenv": "^17.3.1",
 		"hastscript": "^9.0.1",
 		"js-yaml": "^4.1.1",
 		"katex": "^0.16.28",
-		"markdown-it": "^14.1.0",
+		"markdown-it": "^14.1.1",
 		"mdast-util-to-string": "^4.0.0",
 		"node-fetch": "^3.3.2",
 		"ora": "^9.3.0",
@@ -71,7 +70,7 @@
 		"sanitize-html": "^2.17.0",
 		"sharp": "^0.34.5",
 		"stylus": "^0.64.0",
-		"svelte": "^5.50.0",
+		"svelte": "^5.50.3",
 		"tailwindcss": "^4.1.18",
 		"terser": "^5.46.0",
 		"tsx": "^4.21.0",
@@ -79,5 +78,5 @@
 		"typescript": "^5.9.3",
 		"unist-util-visit": "^5.1.0"
 	},
-	"packageManager": "pnpm@10.29.1"
+	"packageManager": "pnpm@10.29.3+sha512.498e1fb4cca5aa06c1dcf2611e6fafc50972ffe7189998c409e90de74566444298ffe43e6cd2acdc775ba1aa7cc5e092a8b7054c811ba8c5770f84693d33d2dc"
 }

@@ -1,7 +1,6 @@
 import type {
 	BeianConfig,
 	ExpressiveCodeConfig,
-	Friend,
 	LicenseConfig,
 	NavBarConfig,
 	ProfileConfig,
@@ -9,8 +8,8 @@ import type {
 } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "Hikari",
-	subtitle: "Yet another Hikari blog site",
+	title: "Zirkeln",
+	subtitle: "Yet another Fuwari blog site",
 	lang: "zh_CN",
 	themeColor: {
 		hue: 250,
@@ -18,7 +17,7 @@ export const siteConfig: SiteConfig = {
 	},
 	banner: {
 		enable: true,
-		src: "https://i.zrn.net/pic/111024784_p0_bebcff40a6.png",
+		src: "assets/image/banner.png",
 		position: "center",
 		credit: {
 			enable: false,
@@ -32,7 +31,7 @@ export const siteConfig: SiteConfig = {
 	},
 	favicon: [
 		{
-			src: "https://i.zrn.net/pic/favicon_abf477e56d.ico",
+			src: "/favicon.ico",
 		},
 	],
 };
@@ -59,11 +58,16 @@ export const navBarConfig: NavBarConfig = {
 			url: "/about/",
 			external: false,
 		},
+		{
+			name: "开往",
+			url: "https://www.travellings.cn/go.html",
+			external: true,
+		},
 	],
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "https://i.zrn.net/pic/seia_avatar_15278c5941.webp",
+	avatar: "assets/image/avatar.webp",
 	name: "Poi",
 	bio: "Darkness cannot drive out darkness, only light can do that. Hate cannot drive out hate, only love can do that. - Martin Luther King, Jr.",
 	links: [],
@@ -77,19 +81,17 @@ export const licenseConfig: LicenseConfig = {
 
 export const beianConfig: BeianConfig = {
 	icp: {
-		enable: false,
-		name: "",
-		url: "",
+		enable: true,
+		name: "浙ICP备2025185594号-2",
+		url: "https://beian.miit.gov.cn/",
 	},
 	mps: {
-		enable: false,
-		name: "",
-		url: "",
+		enable: true,
+		name: "浙公网安备33010602014005号",
+		url: "https://beian.mps.gov.cn/#/query/webSearch?code=33010602014005",
 	},
 };
 
 export const expressiveCodeConfig: ExpressiveCodeConfig = {
 	theme: "github-dark",
 };
-
-export const friends: Friend[] = [];

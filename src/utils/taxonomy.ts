@@ -1,4 +1,4 @@
-import taxonomyMap from "./taxonomy-map.json";
+import taxonomyMap from "../assets/meta/taxonomy-map.json";
 
 function resolveTaxonomyName(
 	map: Record<string, string>,
