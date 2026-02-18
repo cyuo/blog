@@ -41,7 +41,7 @@
 		"@types/mdast": "^4.0.4",
 		"@types/sanitize-html": "^2.16.0",
 		"@types/turndown": "^5.0.6",
-		"astro": "5.16.11",
+		"astro": "5.17.2",
 		"astro-compress": "^2.3.9",
 		"astro-expressive-code": "^0.41.6",
 		"astro-icon": "^1.1.5",
