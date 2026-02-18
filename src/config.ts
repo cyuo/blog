@@ -8,7 +8,7 @@ import type {
 } from "./types/config";
 
 export const siteConfig: SiteConfig = {
-	title: "Zirkeln",
+	title: "Zirkeln 分享",
 	subtitle: "Yet another Fuwari blog site",
 	lang: "zh_CN",
 	themeColor: {
